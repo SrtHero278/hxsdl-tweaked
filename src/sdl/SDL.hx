@@ -1,5 +1,7 @@
 package sdl;
 
+import cpp.CastCharStar;
+import sdl.Types;
 import cpp.ConstCharStar;
 import cpp.RawConstPointer;
 
@@ -15,252 +17,544 @@ import haxe.io.BytesData;
 // https://github.com/swordcube/hxsdl/issues
 
 extern class SDL {
+	// SDL.h
 	@:native("SDL_Init")
-	public extern static function init(flags:UInt32):Int;
+	static function init(flags:UInt32):Int;
 
-	@:native("SDL_SetHint")
-	public extern static function setHint(name:ConstCharStar, value:ConstCharStar):UInt8;
+	@:native("SDL_InitSubSystem")
+	static function initSubSystem(flags:UInt32):Int;
 
-	@:native("SDL_Delay")
-	public extern static function delay(ms:UInt32):Void;
-	
-	@:native("SDL_GetTicks")
-	public extern static function getTicks():UInt32;
+	@:native("SDL_QuitSubSystem")
+	static function quitSubSystem(flags:UInt32):Void;
 
-	@:native("SDL_GetTicks64")
-	public extern static function getTicks64():UInt64;
+	@:native("SDL_WasInit")
+	static function wasInit(flags:UInt32):UInt32;
 
 	@:native("SDL_Quit")
-	public extern static function quit():Void;
+	static function quit():Void;
 
+
+
+	// SDL_hints.h
+	@:native("SDL_SetHintWithPriorit")
+	static function setHintWithPriority(name:ConstCharStar, value:ConstCharStar, priority:HintPriority):Boolean;
+
+	@:native("SDL_SetHint")
+	static function setHint(name:ConstCharStar, value:ConstCharStar):Boolean;
+
+	@:native("SDL_ResetHint")
+	static function resetHint(name:ConstCharStar):Boolean;
+
+	@:native("SDL_ResetHints")
+	static function resetHints():Void;
+
+	@:native("SDL_GetHint")
+	static function getHint(name:ConstCharStar):ConstCharStar;
+
+	@:native("SDL_GetHintBoolean")
+	static function getHintBoolean(name:ConstCharStar, defaultVal:Boolean):Boolean;
+
+	static inline function addHintCallback(name:ConstCharStar, callback:HintCallback, userdata:Any) {
+		untyped __cpp__("SDL_AddHintCallback({0}, {1}, {2})", name, callback, userdata);
+	}
+
+	@:native("SDL_AddHintCallback")
+	@:noCompletion static function _addHintCallback(name:ConstCharStar, callback:HintCallback, userdata:Pointer<cpp.Void>):Void;
+
+	static inline function deleteHintCallback(name:ConstCharStar, callback:HintCallback, userdata:Any) {
+		untyped __cpp__("SDL_DelHintCallback({0}, {1}, {2})", name, callback, userdata);
+	}
+
+	@:native("SDL_DelHintCallback")
+	@:noCompletion static function _delHintCallback(name:ConstCharStar, callback:HintCallback, userdata:Pointer<cpp.Void>):Void;
+
+	@:native("SDL_ClearHints")
+	static function clearHints():Void;
+
+
+
+	// SDL_error.h
 	@:native("SDL_GetError")
-	public extern static function getError():ConstCharStar;
+	static function getError():ConstCharStar;
 
-	@:native("SDL_GetPerformanceCounter")
-	public extern static function getPerformanceCounter():UInt64;
+	@:native("SDL_GetErrorMsg")
+	static function getErrorMsg(errorString:CastCharStar, maxLength:Int):CastCharStar;
 
-	@:native("SDL_GetPerformanceFrequency")
-	public extern static function getPerformanceFrequency():UInt64;
+	@:native("SDL_ClearError")
+	static function clearError():Void;
+
+
+
+	// SDL_log.h
+	@:native("SDL_LogSetAllPriority")
+	static function setAllPriority(priority:LogPriority):Void;
+
+	@:native("SDL_LogSetPriority")
+	static function setPriority(category:Int, priority:LogPriority):Void;
+
+	@:native("SDL_LogGetPriority")
+	static function getPriority(category:Int):LogPriority;
+
+	@:native("SDL_LogResetPriorities")
+	static function resetPriorities():Void;
+
+	@:native("SDL_Log")
+	static function log(fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+
+	@:native("SDL_LogVerbose")
+	static function logVerbose(category:Int, fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+	
+	@:native("SDL_LogDebug")
+	static function logDebug(category:Int, fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+
+	@:native("SDL_LogInfo")
+	static function logInfo(category:Int, fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+
+	@:native("SDL_LogWarn")
+	static function logWarn(category:Int, fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+
+	@:native("SDL_LogError")
+	static function logError(category:Int, fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+
+	@:native("SDL_LogCritical")
+	static function logCritical(category:Int, fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+
+	@:native("SDL_LogMessage")
+	static function logMessage(category:Int, priority:LogPriority, fmt:ConstCharStar, rest:haxe.Rest<Dynamic>):Void;
+
+	static inline function getOutputFunction(userdata:Any):LogOutputFunction {
+		untyped __cpp__("SDL_LogOutputFunction _func; SDL_LogGetOutputFunction(&_func, &{0})", userdata);
+		return untyped __cpp__("_func");
+	}
+
+	@:native("SDL_LogGetOutputFunction")
+	@:noCompletion static function _getOutputFunction(callback:Pointer<LogOutputFunction>, userdata:Pointer<Pointer<cpp.Void>>):Void;
+
+	static inline function setOutputFunction(callback:LogOutputFunction, userdata:Any):Void {
+		untyped __cpp__("SDL_LogSetOutputFunction({0}, {1})", callback, userdata);
+	}
+
+	@:native("SDL_LogSetOutputFunction")
+	@:noCompletion static function _setOutputFunction(callback:LogOutputFunction, userdata:Pointer<cpp.Void>):Void;
+
+	@:native("SDL_MAJOR_VERSION")
+	static final majorVersion:Int;
+
+	@:native("SDL_MINOR_VERSION")
+	static final minorVersion:Int;
+
+	@:native("SDL_PATCHLEVEL")
+	static final patchLevel:Int;
+
+	static inline function getVersion():SDLVersion {
+		untyped __cpp__("SDL_version _sdlVer; SDL_VERSION(&_sdlVer)");
+		return untyped __cpp__("_sdlVer");
+	}
+
+	static inline function versionAtLeast(major:Int, minor:Int, patch:Int) {
+		return untyped __cpp__("SDL_VERSION_ATLEAST({0}, {1}, {2})", major, minor, patch);
+	}
+
+	@:native("SDL_GetRevision")
+	static function getRevision():ConstCharStar;
+
+	@:native("SDL_GetRevisionNumber")
+	static function getRevisionNumber():Int;
+
+
+
+	// SDL_video.h
+	@:native("SDL_GetNumVideoDrivers")
+	static function getNumVideoDrivers():Int;
+
+	@:native("SDL_GetVideoDriver")
+	static function getVideoDriver(index:Int):ConstCharStar;
+
+	@:native("SDL_VideoInit")
+	static function videoInit(driver_name:ConstCharStar):Int;
+
+	@:native("SDL_VideoQuit")
+	static function videoQuit():Void;
+
+	@:native("SDL_GetCurrentVideoDriver")
+	static function getCurrentVideoDriver():ConstCharStar;
+
+	@:native("SDL_GetNumVideoDisplays")
+	static function getNumVideoDisplays():Int;
+
+	@:native("SDL_GetDisplayName")
+	static function getDisplayName(displayIndex:Int):ConstCharStar;
+
+	static inline function getDisplayBounds(displayIndex:Int):Rectangle {
+		var result:Int;
+		untyped __cpp__("SDL_Rect _rect; {1} = SDL_GetDisplayBounds({0}, &_rect)", displayIndex, result);
+		return (result == 0) ? untyped __cpp__("_rect") : null;
+	}
+
+	@:native("SDL_GetDisplayBounds")
+	@:noCompletion static function _getDisplayBounds(displayIndex:Int, rect:Pointer<Rectangle>):Int;
+
+	static inline function getDisplayUsableBounds(displayIndex:Int):Rectangle {
+		var result:Int;
+		untyped __cpp__("SDL_Rect _rect; {1} = SDL_GetDisplayUsableBounds({0}, &_rect)", displayIndex, result);
+		return (result == 0) ? untyped __cpp__("_rect") : null;
+	}
+
+	@:native("SDL_GetDisplayUsableBounds")
+	@:noCompletion static function _getDisplayUsableBounds(displayIndex:Int, rect:Pointer<Rectangle>):Int;
+
+	@:native("SDL_GetDisplayDPI")
+	static function getDisplayDPI(displayIndex:Int, ddpi:Pointer<Float>, hdpi:Pointer<Float>, vdpi:Pointer<Float>):Int;
+
+	@:native("SDL_GetDisplayOrientation")
+	static function getDisplayOrientation(displayIndex:Int):DisplayOrientation;
+
+	@:native("SDL_GetNumDisplayModes")
+	static function getNumDisplayModes(displayIndex:Int):Int;
+
+	static inline function getDisplayMode(displayIndex:Int, modeIndex:Int):DisplayMode {
+		var result:Int;
+		untyped __cpp__("SDL_DisplayMode _mode; {0} = SDL_GetDisplayMode({1}, {2}, &_mode)", result, displayIndex, modeIndex);
+		return (result == 0) ? untyped __cpp__("_mode") : null;
+	}
+
+	@:native("SDL_GetDisplayMode")
+	@:noCompletion static function _getDisplayMode(displayIndex:Int, modeIndex:Int, mode:Pointer<DisplayMode>):Int;
+
+	static inline function getDesktopDisplayMode(displayIndex:Int):DisplayMode {
+		var result:Int;
+		untyped __cpp__("SDL_DisplayMode _mode; {0} = SDL_GetDesktopDisplayMode({1}, &_mode)", result, displayIndex);
+		return (result == 0) ? untyped __cpp__("_mode") : null;
+	}
+
+	@:native("SDL_GetDesktopDisplayMode")
+	@:noCompletion static function _getDesktopDisplayMode(displayIndex:Int, mode:Pointer<DisplayMode>):Int;
+
+	static inline function getCurrentDisplayMode(displayIndex:Int):DisplayMode {
+		var result:Int;
+		untyped __cpp__("SDL_DisplayMode _mode; {0} = SDL_GetCurrentDisplayMode({1}, &_mode)", result, displayIndex);
+		return (result == 0) ? untyped __cpp__("_mode") : null;
+	}
+
+	@:native("SDL_GetCurrentDisplayMode")
+	@:noCompletion static function _getCurrentDisplayMode(displayIndex:Int, mode:Pointer<DisplayMode>):Int;
+
+	@:native("SDL_GetClosestDisplayMode")
+	static function getClosestDisplayMode(displayIndex:Int, mode:RawConstPointer<DisplayMode>, closest:Pointer<DisplayMode>):Pointer<DisplayMode>;
+
+	static inline function getPointDisplayIndex(point:Point):Int {
+		return untyped __cpp__("SDL_GetPointDisplayIndex(&{0})", point);
+	}
+
+	@:native("SDL_GetPointDisplayIndex")
+	static function _getPointDisplayIndex(point:RawConstPointer<Point>):Int;
+
+	static inline function getRectDisplayIndex(rect:Rectangle):Int {
+		return untyped __cpp__("SDL_GetRectDisplayIndex(&{0})", rect);
+	}
+
+	@:native("SDL_GetRectDisplayIndex")
+	static function _getRectDisplayIndex(rect:RawConstPointer<Rectangle>):Int;
+
+	@:native("SDL_GetWindowDisplayIndex")
+	static function getWindowDisplayIndex(window:Window):Int;
+
+	static inline function setWindowDisplayMode(window:Window, mode:DisplayMode):Int {
+		return untyped __cpp__("SDL_SetWindowDisplayMode({0}, &{1})", window, mode);
+	}
+
+	@:native("SDL_SetWindowDisplayMode")
+	@:noCompletion static function _setWindowDisplayMode(window:Window, mode:RawConstPointer<DisplayMode>):Int;
+
+	static inline function getWindowDisplayMode(window:Window):DisplayMode {
+		var result:Int;
+		untyped __cpp__("SDL_DisplayMode _mode; {0} = SDL_GetWindowDisplayMode({1}, &_mode)", result, window);
+		return (result == 0) ? untyped __cpp__("_mode") : null;
+	}
+
+	@:native("SDL_GetWindowDisplayMode")
+	@:noCompletion static function _getWindowDisplayMode(window:Window, mode:Pointer<DisplayMode>):Int;
+
+	static inline function getWindowICCProfile(window:Window, size:UInt64):Any {
+		return untyped __cpp__("SDL_GetWindowICCProfile({0}, &{1})", window, size);
+	}
+
+	@:native("SDL_GetWindowICCProfile")
+	@:noCompletion static function _getWindowICCProfile(window:Window, size:cpp.RawPointer<UInt64>):Pointer<cpp.Void>;
+
+	@:native("SDL_GetWindowPixelFormat")
+	static function getWindowPixelFormat(window:Window):UInt32;
 
 	@:native("SDL_CreateWindow")
-	public extern static function createWindow(title:ConstCharStar, x:Int, y:Int, width:Int, height:Int, flags:UInt32 = 0):Window;
+	static function createWindow(title:ConstCharStar, x:Int, y:Int, w:Int, h:Int, flags:UInt32):Window;
 
-	@:native("SDL_DestroyWindow")
-	public extern static function destroyWindow(window:Window):Void;
-
-	@:native("SDL_GetWindowPosition")
-	public static inline function getWindowPosition(window:Window):Point {
-		var winX:Int = 0;
-		var winY:Int = 0;
-		untyped __cpp__("SDL_GetWindowPosition({0}, {1}, {2})", window, Pointer.addressOf(winX), Pointer.addressOf(winY));
-		return Point.create(winX, winY);
+	static inline function createWindowFrom(data:Any):Window {
+		return untyped __cpp__("SDL_CreateWindowFrom((void*){0})", data);
 	}
 
-	@:native("SDL_SetWindowPosition")
-	public extern static function setWindowPosition(window:Window, x:Int, y:Int):Void;
+	@:native("SDL_CreateWindowFrom")
+	@:noCompletion static function _createWindowFrom(data:RawConstPointer<cpp.Void>):Window;
 
-	@:native("SDL_GetWindowSize")
-	public static inline function getWindowSize(window:Window):Point {
-		var sizeX:Int = 0;
-		var sizeY:Int = 0;
-		untyped __cpp__("SDL_GetWindowSize({0}, {1}, {2})", window, Pointer.addressOf(sizeX), Pointer.addressOf(sizeY));
-		return Point.create(sizeX, sizeY);
-	}
+	@:native("SDL_GetWindowID")
+	static function getWindowID(window:Window):UInt32;
 
-	@:native("SDL_SetWindowSize")
-	public extern static function setWindowSize(window:Window, x:Int, y:Int):Void;
+	@:native("SDL_GetWindowFromID")
+	static function getWindowFromID(id:UInt32):Window;
 
-	@:native("SDL_GetWindowTitle")
-	public extern static function getWindowTitle(window:Window):ConstCharStar;
+	@:native("SDL_GetWindowFlags")
+	static function getWindowFlags(window:Window):UInt32;
 
 	@:native("SDL_SetWindowTitle")
-	public extern static function setWindowTitle(window:Window, title:ConstCharStar):Void;
+	static function setWindowTitle(window:Window, title:ConstCharStar):Void;
+
+	@:native("SDL_GetWindowTitle")
+	static function getWindowTitle(window:Window):ConstCharStar;
 
 	@:native("SDL_SetWindowIcon")
-	public extern static function setWindowIcon(window:Window, surface:Surface):Void;
+	static function setWindowIcon(window:Window, icon:Surface):Void;
 
-	@:native("SDL_CreateRenderer")
-	public extern static function createRenderer(window:Window, index:Int, flags:UInt32):Renderer;
-
-	@:native("SDL_GetRenderDrawColor")
-	public static inline function getRenderDrawColor(renderer:Renderer) {
-		var r:UInt8 = 0;
-		var g:UInt8 = 0;
-		var b:UInt8 = 0;
-		var a:UInt8 = 0;
-		untyped __cpp__("SDL_GetRenderDrawColor({0}, {1}, {2}, {3}, {4})", renderer, Pointer.addressOf(r), Pointer.addressOf(g), Pointer.addressOf(b), Pointer.addressOf(a));
-		return {r: r, g: g, b: b, a: a};
+	static inline function setWindowData(window:Window, name:ConstCharStar, userdata:Any):Any {
+		return untyped __cpp__("SDL_SetWindowData({0}, {1}, {2})", window, name, userdata);
 	}
 
-	@:native("SDL_SetRenderDrawColor")
-	public extern static function setRenderDrawColor(renderer:Renderer, r:UInt8, g:UInt8, b:UInt8, a:UInt8):Int;
+	@:native("SDL_SetWindowData")
+	@:noCompletion static function _setWindowData(window:Window, name:ConstCharStar, userdata:Pointer<cpp.Void>):Pointer<cpp.Void>;
+
+	static inline function getWindowData(window:Window, name:ConstCharStar):Any {
+		return untyped __cpp__("SDL_GetWindowData({0}, {1})", window, name);
+	}
+
+	@:native("SDL_GetWindowData")
+	@:noCompletion static function _getWindowData(window:Window, name:ConstCharStar):Pointer<cpp.Void>;
+
+	@:native("SDL_SetWindowPosition")
+	static function setWindowPosition(window:Window, x:Int, y:Int):Void;
+
+	@:native("SDL_GetWindowPosition")
+	@:noCompletion static function getWindowPosition(window:Window, x:Pointer<Int>, y:Pointer<Int>):Void;
+
+	@:native("SDL_SetWindowSize")
+	static function setWindowSize(window:Window, width:Int, height:Int):Void;
+
+	@:native("SDL_GetWindowSize")
+	static function getWindowSize(window:Window, width:Pointer<Int>, height:Pointer<Int>):Void;
+
+	@:native("SDL_GetWindowBordersSize")
+	static function getWindowBordersSize(window:Window, top:Pointer<Int>, left:Pointer<Int>, bottom:Pointer<Int>, right:Pointer<Int>):Int;
+
+	@:native("SDL_GetWindowSizeInPixels")
+	static function getWindowSizeInPixels(window:Window, width:Pointer<Int>, height:Pointer<Int>):Void;
+
+	@:native("SDL_SetWindowMinimumSize")
+	static function setWindowMinimumSize(window:Window, minWidth:Int, minHeight:Int):Void;
+
+	@:native("SDL_GetWindowMinimumSize")
+	static function getWindowMinimumSize(window:Window, width:Pointer<Int>, height:Pointer<Int>):Void;
+
+	@:native("SDL_SetWindowMaximumSize")
+	static function setWindowMaximumSize(window:Window, maxWidth:Int, maxHeight:Int):Void;
+
+	@:native("SDL_GetWindowMaximumSize")
+	static function getWindowMaximumSize(window:Window, width:Pointer<Int>, height:Pointer<Int>):Void;
+
+	@:native("SDL_SetWindowBordered")
+	static function setWindowBordered(window:Window, bordered:Boolean):Void;
+
+	@:native("SDL_SetWindowResizable")
+	static function setWindowResizable(window:Window, resizable:Boolean):Void;
+
+	@:native("SDL_SetWindowAlwaysOnTop")
+	static function setWindowAlwaysOnTop(window:Window, onTop:Boolean):Void;
+
+	@:native("SDL_ShowWindow")
+	static function showWindow(window:Window):Void;
+
+	@:native("SDL_HideWindow")
+	static function hideWindow(window:Window):Void;
+
+	@:native("SDL_RaiseWindow")
+	static function raiseWindow(window:Window):Void;
+
+	@:native("SDL_MaximizeWindow")
+	static function maximizeWindow(window:Window):Void;
+
+	@:native("SDL_MinimizeWindow")
+	static function minimizeWindow(window:Window):Void;
+
+	@:native("SDL_RestoreWindow")
+	static function restoreWindow(window:Window):Void;
+
+	@:native("SDL_SetWindowFullscreen")
+	static function setWindowFullscreen(window:Window, flags:UInt32):Int;
+
+	@:native("SDL_HasWindowSurface")
+	static function hasWindowSurface(window:Window):Boolean;
+
+	@:native("SDL_GetWindowSurface")
+	static function getWindowSurface(window:Window):Surface;
+
+	@:native("SDL_UpdateWindowSurface")
+	static function updateWindowSurface(window:Window):Int;
+
+	@:native("SDL_UpdateWindowSurfaceRects")
+	static function updateWindowSurfaceRects(window:Window, rects:RawConstPointer<Rectangle>, numrects:Int):Int;
+
+	@:native("SDL_DestroyWindowSurface")
+	static function destroyWindowSurface(window:Window):Int;
+
+	@:native("SDL_SetWindowGrab")
+	static function setWindowGrab(window:Window, grabbed:Boolean):Void;
+
+	@:native("SDL_SetWindowKeyboardGrab")
+	static function setWindowKeyboardGrab(window:Window, grabbed:Boolean):Void;
+
+	@:native("SDL_SetWindowMouseGrab")
+	static function setWindowMouseGrab(window:Window, grabbed:Boolean):Void;
+
+	@:native("SDL_GetWindowGrab")
+	static function getWindowGrab(window:Window):Boolean;
+
+	@:native("SDL_GetWindowKeyboardGrab")
+	static function getWindowKeyboardGrab(window:Window):Boolean;
+
+	@:native("SDL_GetWindowMouseGrab")
+	static function getWindowMouseGrab(window:Window):Boolean;
+
+	@:native("SDL_GetGrabbedWindow")
+	static function getGrabbedWindow():Window;
+
+	static inline function setWindowMouseRect(window:Window, rect:Rectangle):Int {
+		return untyped __cpp__("SDL_SetWindowMouseRect({0}, {1})", window, rect);
+	}
+
+	@:native("SDL_SetWindowMouseRect")
+	@:noCompletion static function _setWindowMouseRect(window:Window, rect:RawConstPointer<Rectangle>):Int;
+
+	static inline function getWindowMouseRect(window:Window):Rectangle {
+		return untyped __cpp__("SDL_GetWindowMouseRect({0})", window);
+	}
+
+	@:native("SDL_GetWindowMouseRect")
+	@:noCompletion static function _getWindowMouseRect(window:Window):RawConstPointer<Rectangle>;
+
+	@:native("SDL_SetWindowBrightness")
+	static function setWindowBrightness(window:Window, brightness:Float):Int;
+
+	@:native("SDL_GetWindowBrightness")
+	static function getWindowBrightness(window:Window):Float;
+
+	@:native("SDL_SetWindowOpacity")
+	static function setWindowOpacity(window:Window, opacity:Float):Int;
+
+	static inline function getWindowOpacity(window:Window):Float {
+		untyped __cpp__("float _opac; SDL_GetWindowOpacity({0}, &_opac)", window);
+		return untyped __cpp__("_opac");
+	}
+
+	@:native("SDL_GetWindowOpacity")
+	@:noCompletion static function _getWindowOpacity(window:Window, outOpacity:Pointer<Float>):Int;
+
+	@:native("SDL_SetWindowModalFor")
+	static function setWindowModalFor(modal_window:Window, parent_window:Window):Int;
+
+	@:native("SDL_SetWindowInputFocus")
+	static function setWindowInputFocus(window:Window):Int;
+
+	@:native("SDL_SetWindowGammaRamp")
+	static function setWindowGammaRamp(window:Window, red:RawConstPointer<UInt16>, green:RawConstPointer<UInt16>, blue:RawConstPointer<UInt16>):Int;
+
+	@:native("SDL_GetWindowGammaRamp")
+	static function getWindowGammaRamp(window:Window, red:Pointer<UInt16>, green:Pointer<UInt16>, blue:Pointer<UInt16>):Int;
+
+	static inline function setWindowHitTest(window:Window, callback:HitTest, callbackData:Any):Int {
+		return untyped __cpp__("SDL_SetWindowHitTest({0}, {1}, {2})", window, callback, callbackData);
+	}
+
+	@:native("SDL_SetWindowHitTest")
+	@:noCompletion static function _setWindowHitTest(window:Window, callback:HitTest, callbackData:Pointer<cpp.Void>):Int;
+
+	@:native("SDL_FlashWindow")
+	static function flashWindow(window:Window, operation:FlashOperation):Int;
+
+	@:native("SDL_DestroyWindow")
+	static function destroyWindow(window:Window):Void;
+
+	@:native("SDL_IsScreenSaverEnabled")
+	static function isScreenSaverEnabled():Boolean;
+
+	@:native("SDL_EnableScreenSaver")
+	static function enableScreenSaver():Void;
+
+	@:native("SDL_DisableScreenSaver")
+	static function disableScreenSaver():Void;
+
+	@:native("SDL_GL_LoadLibrary")
+	static function glLoadLibrary(path:ConstCharStar):Int;
+
+	static inline function glGetProcAddress(proc:ConstCharStar):Any {
+		return untyped __cpp__("SDL_GL_GetProcAddress({0})", proc);
+	}
+
+	@:native("SDL_GL_GetProcAddress")
+	@:noCompletion static function _glGetProcAddress(proc:ConstCharStar):Pointer<cpp.Void>;
+
+	@:native("SDL_GL_UnloadLibrary")
+	static function glUnloadLibrary():Void;
+
+	@:native("SDL_GL_ExtensionSupported")
+	static function glExtensionSupported(extension:ConstCharStar):Boolean;
+
+	@:native("SDL_GL_ResetAttributes")
+	static function glResetAttributes():Void;
+
+	@:native("SDL_GL_SetAttribute")
+	static function glSetAttribute(attr:GlAttribute, value:Int):Int;
+
+	static inline function glGetAttribute(attr:GlAttribute):Int {
+		var result:Int;
+		untyped __cpp__("int _val; {0} = SDL_GL_GetAttribute({1}, &_val)", result, attr);
+		return (result == 0) ? untyped __cpp__("_val") : null;
+	}
+
+	@:native("SDL_GL_GetAttribute")
+	@:noCompletion static function _glGetAttribute(attr:GlAttribute, value:Pointer<Int>):Int;
+
+	@:native("SDL_GL_CreateContext")
+	static function glCreateContext(window:Window):GlContext;
+
+	@:native("SDL_GL_MakeCurrent")
+	static function glMakeCurrent(window:Window, context:GlContext):Int;
+
+	@:native("SDL_GL_GetCurrentWindow")
+	static function glGetCurrentWindow():Window;
+
+	@:native("SDL_GL_GetCurrentContext")
+	static function glGetCurrentContext():GlContext;
+
+	@:native("SDL_GL_GetDrawableSize")
+	static function glGetDrawableSize(window:Window, w:Pointer<Int>, h:Pointer<Int>):Void;
+
+	@:native("SDL_GL_SetSwapInterval")
+	static function glSetSwapInterval(interval:Int):Int;
+
+	@:native("SDL_GL_GetSwapInterval")
+	static function glGetSwapInterval():Int;
+
+	@:native("SDL_GL_SwapWindow")
+	static function glSwapWindow(window:Window):Void;
+
+	@:native("SDL_GL_DeleteContext")
+	static function glDeleteContext(context:GlContext):Void;
+
 	
-	@:native("SDL_RenderDrawRect")
-	public static inline function renderDrawRect(renderer:Renderer, rect:Rectangle):Int {
-		return untyped __cpp__("SDL_RenderDrawRect({0}, {1})", renderer, RawConstPointer.addressOf(rect));
-	}
 
-	@:native("SDL_RenderFillRect")
-	public static inline function renderFillRect(renderer:Renderer, rect:Rectangle):Int {
-		return untyped __cpp__("SDL_RenderFillRect({0}, {1})", renderer, RawConstPointer.addressOf(rect));
-	}
-
-	@:native("SDL_RenderDrawRectF")
-	public static inline function renderDrawRectF(renderer:Renderer, rect:FRectangle):Int {
-		return untyped __cpp__("SDL_RenderDrawRectF({0}, {1})", renderer, RawConstPointer.addressOf(rect));
-	}
-
-	@:native("SDL_RenderFillRectF")
-	public static inline function renderFillRectF(renderer:Renderer, rect:FRectangle):Int {
-		return untyped __cpp__("SDL_RenderFillRectF({0}, {1})", renderer, RawConstPointer.addressOf(rect));
-	}
-
-	@:native("SDL_RenderClear")
-	public extern static function renderClear(renderer:Renderer):Int;
-
-	@:native("SDL_RenderPresent")
-	public extern static function renderPresent(renderer:Renderer):Int;
-
-	@:native("SDL_RenderCopy")
-	public static inline function renderCopy(renderer:Renderer, texture:Texture, src:Rectangle, dst:Rectangle):Int {
-		return untyped __cpp__("SDL_RenderCopy({0}, {1}, {2}, {3})", renderer, texture, RawConstPointer.addressOf(src), RawConstPointer.addressOf(dst));
-	}
-
-	@:native("SDL_RenderCopyEx")
-	public static inline function renderCopyEx(renderer:Renderer, texture:Texture, src:Rectangle, dst:Rectangle, angle:Double, center:Point, flip:sdl.Renderer.RendererFlip = NONE):Int {
-		return untyped __cpp__("SDL_RenderCopyEx({0}, {1}, {2}, {3}, {4}, {5}, {6})", renderer, texture, RawConstPointer.addressOf(src), RawConstPointer.addressOf(dst), angle, RawConstPointer.addressOf(center), untyped __cpp__("(SDL_RendererFlip){0}", flip));
-	}
-
-	@:native("SDL_RenderCopyF")
-	public static inline function renderCopyF(renderer:Renderer, texture:Texture, src:Rectangle, dst:FRectangle):Int {
-		return untyped __cpp__("SDL_RenderCopyF({0}, {1}, {2}, {3})", renderer, texture, RawConstPointer.addressOf(src), RawConstPointer.addressOf(dst));
-	}
-
-	@:native("SDL_RenderCopyExF")
-	public static inline function renderCopyExF(renderer:Renderer, texture:Texture, src:Rectangle, dst:FRectangle, angle:Double, center:FPoint, flip:sdl.Renderer.RendererFlip = NONE):Int {
-		return untyped __cpp__("SDL_RenderCopyExF({0}, {1}, {2}, {3}, {4}, {5}, {6})", renderer, texture, RawConstPointer.addressOf(src), RawConstPointer.addressOf(dst), angle, RawConstPointer.addressOf(center), untyped __cpp__("(SDL_RendererFlip){0}", flip));
-	}
-
-	@:native("SDL_RenderSetVSync")
-	public extern static function renderSetVSync(renderer:Renderer, vsync:Boolean):Int;
-
-	@:native("SDL_GetRenderTarget")
-	public extern static function getRenderTarget(renderer:Renderer):Texture;
-
-	@:native("SDL_SetRenderTarget")
-	public extern static function setRenderTarget(renderer:Renderer, texture:Texture):Int;
-
-	@:native("SDL_SetRenderTarget")
-	public static inline function resetRenderTarget(renderer:Renderer):Int
-		return untyped __cpp__("SDL_SetRenderTarget({0}, NULL)", renderer);
-
-	@:native("SDL_DestroyRenderer")
-	public extern static function destroyRenderer(renderer:Renderer):Int;
-
-	@:native("SDL_QueryTexture")
-	public extern static function queryTexture(texture:Texture, format:Pointer<UInt32>, access:Pointer<Int>, width:Pointer<Int>, height:Pointer<Int>):Int;
-
-	// utilizes queryTexture to get texture size :3
-	public static inline function getTextureSize(texture:Texture):Point {
-		var w:Int = 0;
-		var h:Int = 0;
-		queryTexture(texture, null, null, Pointer.addressOf(w), Pointer.addressOf(h));
-		return Point.create(w, h);
-	}
-
-	@:native("SDL_GetTextureScaleMode")
-	public static inline function getTextureScaleMode(texture:Texture):Int {
-		var scaleMode:TextureScaleMode = -1;
-		untyped __cpp__("SDL_ScaleMode output;
-		SDL_GetTextureScaleMode({0}, &output);
-		{1} = output", texture, scaleMode);
-		return scaleMode;
-	}
-
-	@:native("SDL_SetTextureScaleMode")
-	public static inline function setTextureScaleMode(texture:Texture, scaleMode:TextureScaleMode):Int {
-		return untyped __cpp__("SDL_SetTextureScaleMode({0}, (SDL_ScaleMode){1})", texture, scaleMode);
-	}
-
-	@:native("SDL_CreateTexture")
-	public extern static function createTexture(renderer:Renderer, format:UInt32, access:Int, width:Int, height:Int):Texture;
-
-	@:native("SDL_DestroyTexture")
-	public extern static function destroyTexture(texture:Texture):Void;
-
-	@:native("SDL_CreateTextureFromSurface")
-	public extern static function createTextureFromSurface(renderer:Renderer, surface:Surface):Texture;
-
-	@:native("SDL_FreeSurface")
-	public extern static function freeSurface(surface:Surface):Int;
-
-	@:native("SDL_LockSurface")
-	public extern static function lockSurface(surface:Surface):Int;
-
-	@:native("SDL_UnlockSurface")
-	public extern static function unlockSurface(surface:Surface):Int;
-
-	@:native("SDL_RWFromConstMem")
-	public static inline function rwFromConstMem(mem:BytesData, size:Int):RWops {
-		return untyped __cpp__("SDL_RWFromConstMem((void*)&{0}[0], {1})", mem, size);
-	}
-
-	@:native("SDL_PollEvent")
-	public extern static function pollEvent(event:Event):Int;
-
+	// extras
 	@:native("SDL_Event")
-	public static inline function createEventPtr():Event {
+	static inline function createEventPtr():Event {
 		var event:Event = null;
 		untyped __cpp__('SDL_Event __sdl_ev__; {0} = &__sdl_ev__', event);
 		return event;
 	}
-}
-
-@:keep
-enum abstract InitFlags(UInt32) to UInt32 from UInt32 {
-	var VIDEO = 0x00000020;
-	var AUDIO = 0x00000010;
-	var JOYSTICK = 0x00000200;
-	var HAPTIC = 0x00001000;
-	var CONTROLLER = 0x00002000;
-	var EVENTS = 0x00004000;
-	var SENSOR = 0x00004000;
-	var NOPARACHUTE = 0x00100000;
-	var EVERYTHING = 0x00000020 | 0x00000010 | 0x00000200 | 0x00001000 | 0x00002000 | 0x00004000 | 0x00100000;
-}
-
-@:keep
-enum abstract Boolean(UInt8) from UInt8 to UInt8 {
-	var FALSE = 0;
-	var TRUE = 1;
-}
-
-@:keep
-enum abstract WindowEventID(UInt8) from UInt8 to UInt8 {
-	var NONE = 0;       /**< Never used */
-    var SHOWN;          /**< Window has been shown */
-    var HIDDEN;         /**< Window has been hidden */
-    var EXPOSED;        /**< Window has been exposed and should be
-                                         redrawn */
-    var MOVED;          /**< Window has been moved to data1, data2
-                                     */
-    var RESIZED;        /**< Window has been resized to data1xdata2 */
-    var SIZE_CHANGED;   /**< The window size has changed, either as
-                                         a result of an API call or through the
-                                         system or user changing the window size. */
-    var MINIMIZED;      /**< Window has been minimized */
-    var MAXIMIZED;      /**< Window has been maximized */
-    var RESTORED;       /**< Window has been restored to normal size
-                                         and position */
-    var ENTER;          /**< Window has gained mouse focus */
-    var LEAVE;          /**< Window has lost mouse focus */
-    var FOCUS_GAINED;   /**< Window has gained keyboard focus */
-    var FOCUS_LOST;     /**< Window has lost keyboard focus */
-    var CLOSE;          /**< The window manager requests that the window be closed */
-    var TAKE_FOCUS;     /**< Window is being offered a focus (should SetWindowInputFocus() on itself or a subwindow, or ignore) */
-    var HIT_TEST;       /**< Window had a hit test that wasn't SDL_HITTEST_NORMAL. */
-    var ICCPROF_CHANGED; /**< The ICC profile of the window's display has changed. */
-    var DISPLAY_CHANGED; /**< Window has been moved to display data1. */
 }
 
 @:keep
@@ -404,19 +698,6 @@ extern class Point {
 }
 
 @:keep
-@:native("SDL_FPoint")
-@:include("vendor/include/Headers.h")
-@:structAccess
-extern class FPoint {
-	public var x:Float;
-	public var y:Float;
-
-	public static inline function create(x:Float, y:Float):FPoint {
-		return cast untyped __cpp__("SDL_FPoint{ (double){0}, (double){1} }", x, y);
-	}
-}
-
-@:keep
 @:native("SDL_Rect")
 @:include("vendor/include/Headers.h")
 @:structAccess
@@ -428,21 +709,6 @@ extern class Rectangle {
 
 	public static inline function create(x:Int, y:Int, w:Int, h:Int):Rectangle {
 		return cast untyped __cpp__("SDL_Rect{ (int){0}, (int){1}, (int){2}, (int){3} }", x, y, w, h);
-	}
-}
-
-@:keep
-@:native("SDL_FRect")
-@:include("vendor/include/Headers.h")
-@:structAccess
-extern class FRectangle {
-	public var x:Float;
-	public var y:Float;
-	public var w:Float;
-	public var h:Float;
-
-	public static inline function create(x:Float, y:Float, w:Float, h:Float):FRectangle {
-		return cast untyped __cpp__("SDL_FRect{ (double){0}, (double){1}, (double){2}, (double){3} }", x, y, w, h);
 	}
 }
 

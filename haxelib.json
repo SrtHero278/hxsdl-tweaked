@@ -4,9 +4,9 @@
     "license": "MIT",
     "tags": ["haxe", "sdl", "hxsdl", "cpp", "binds", "bindings", "native"],
     "description": "A haxelib containing hxcpp bindings for SDL.",
-    "version": "0.2.1",
+    "version": "0.1.7",
     "classPath": "src/",
-    "releasenote": "MacOS Support is now fully working, Thank you JonnycatMeow!",
+    "releasenote": "Fix even more compilation issues.",
     "contributors": ["swordcube"],
     "dependencies": {
         "hxcpp": ""
