@@ -1,7 +1,7 @@
 package sdl;
 
+import sdl.SDL.Color;
 import cpp.RawPointer;
-import sdl.Window;
 import cpp.ConstCharStar;
 
 @:keep
@@ -335,6 +335,46 @@ extern class DisplayMode {
 }
 
 @:keep
+@:native("SDL_Window")
+@:include("vendor/include/Headers.h")
+extern class SDL_Window {}
+typedef Window = Pointer<SDL_Window>;
+
+@:keep
+enum abstract WindowInitFlags(UInt32) from UInt32 to UInt32 {
+	var FULLSCREEN = 0x00000001;
+	var OPENGL = 0x00000002;
+	var SHOWN = 0x00000004;
+	var HIDDEN = 0x00000008;
+	var BORDERLESS = 0x00000010;
+	var RESIZABLE = 0x00000020;
+	var MINIMIZED = 0x00000040;
+	var MAXIMIZED = 0x00000080;
+	var MOUSE_GRABBED = 0x00000100;
+	var INPUT_FOCUS = 0x00000200;
+	var MOUSE_FOCUS = 0x00000400;
+	var FULLSCREEN_DESKTOP = (FULLSCREEN | 0x00001000);
+	var FOREIGN = 0x00000800;
+	var ALLOW_HIGHDPI = 0x00002000;
+	var MOUSE_CAPTURE = 0x00004000;
+	var ALWAYS_ON_TOP = 0x00008000;
+	var SKIP_TASKBAR = 0x00010000;
+	var UTILITY = 0x00020000;
+	var TOOLTIP = 0x00040000;
+	var POPUP_MENU = 0x00080000;
+	var KEYBOARD_GRABBED = 0x00100000;
+	var VULKAN = 0x10000000;
+	var METAL = 0x20000000;
+	var INPUT_GRABBED = MOUSE_GRABBED;
+}
+
+@:keep
+enum abstract WindowPos(UInt32) from UInt32 to UInt32 {
+	var CENTERED = 0x2FFF0000;
+	var UNDEFINED = 0x1FFF0000;
+}
+
+@:keep
 enum abstract WindowEventID(UInt32) from UInt32 to UInt32 {
 	var NONE = 0;       /**< Never used */
     var SHOWN;          /**< Window has been shown */
@@ -466,6 +506,48 @@ typedef HitTest = cpp.Callable<(window:Window, area:cpp.RawConstPointer<sdl.SDL.
 
 
 
+// SDL_blendmode.h
+enum abstract BlendMode(UInt32) to UInt32 from UInt32 {
+	var NONE = 0x00000000;     /**< no blending
+									dstRGBA = srcRGBA */
+	var BLEND = 0x00000001;    /**< alpha blending
+									dstRGB = (srcRGB * srcA) + (dstRGB * (1-srcA))
+									dstA = srcA + (dstA * (1-srcA)) */
+	var ADD = 0x00000002;      /**< additive blending
+									dstRGB = (srcRGB * srcA) + dstRGB
+									dstA = dstA */
+	var MOD = 0x00000004;      /**< color modulate
+									dstRGB = srcRGB * dstRGB
+									dstA = dstA */
+	var MUL = 0x00000008;      /**< color multiply
+									dstRGB = (srcRGB * dstRGB) + (dstRGB * (1-srcA))
+									dstA = dstA */
+	var INVALID = 0x7FFFFFFF;
+}
+
+enum abstract BlendOperation(UInt32) to UInt32 from UInt32 {
+	var ADD              = 0x1;  /**< dst + src: supported by all renderers */
+    var SUBTRACT         = 0x2;  /**< dst - src : supported by D3D9, D3D11, OpenGL, OpenGLES */
+    var REV_SUBTRACT     = 0x3;  /**< src - dst : supported by D3D9, D3D11, OpenGL, OpenGLES */
+    var MINIMUM          = 0x4;  /**< min(dst, src) : supported by D3D9, D3D11 */
+    var MAXIMUM          = 0x5;   /**< max(dst, src) : supported by D3D9, D3D11 */
+}
+
+enum abstract BlendFactor(UInt32) to UInt32 from UInt32 {
+	var ZERO                = 0x1;  /**< 0, 0, 0, 0 */
+    var ONE                 = 0x2;  /**< 1, 1, 1, 1 */
+    var SRC_COLOR           = 0x3;  /**< srcR, srcG, srcB, srcA */
+    var ONE_MINUS_SRC_COLOR = 0x4;  /**< 1-srcR, 1-srcG, 1-srcB, 1-srcA */
+    var SRC_ALPHA           = 0x5;  /**< srcA, srcA, srcA, srcA */
+    var ONE_MINUS_SRC_ALPHA = 0x6;  /**< 1-srcA, 1-srcA, 1-srcA, 1-srcA */
+    var DST_COLOR           = 0x7;  /**< dstR, dstG, dstB, dstA */
+    var ONE_MINUS_DST_COLOR = 0x8;  /**< 1-dstR, 1-dstG, 1-dstB, 1-dstA */
+    var DST_ALPHA           = 0x9;  /**< dstA, dstA, dstA, dstA */
+    var ONE_MINUS_DST_ALPHA = 0xA;  /**< 1-dstA, 1-dstA, 1-dstA, 1-dstA */
+}
+
+
+
 // SDL_render.h
 @:keep
 enum abstract RendererFlags(UInt32) from UInt32 to UInt32 {
@@ -482,7 +564,7 @@ enum abstract RendererFlags(UInt32) from UInt32 to UInt32 {
 @:include("vendor/include/Headers.h")
 @:native("SDL_RendererInfo")
 @:structAccess
-extern class SDL_RendererInfo {
+extern class RendererInfo {
 	@:native("name")
 	public var name:ConstCharStar;
 	@:native("flags")
@@ -496,18 +578,60 @@ extern class SDL_RendererInfo {
 	@:native("max_texture_height")
 	public var maxTextureHeight:Int;
 }
-typedef RendererInfo = Pointer<SDL_RendererInfo>;
 
 @:keep
 @:native("SDL_Vertex")
 @:include("vendor/include/Headers.h")
 @:structAccess
-extern class SDL_Vertex {
+extern class Vertex {
 	@:native("position")
-	public var name:ConstCharStar;
-	@:native("flags")
-	public var flags:UInt32;
-	@:native("num_texture_formats")
-	public var numTextureFormats:UInt32;
+	public var position:FloatPoint;
+	@:native("color")
+	public var color:Color;
+	@:native("tex_coord")
+	public var texCoord:FloatPoint;
+
+	public static inline function create(pos:FloatPoint, col:Color, tex:FloatPoint):Vertex {
+		return cast untyped __cpp__("SDL_Vertex{{0}, {1}, {2}}", pos, col, tex);
+	}
 }
-typedef Vertex = Pointer<SDL_Vertex>;
+
+@:keep
+enum abstract ScaleMode(UInt32) from UInt32 to UInt32 {
+    var NEAREST = 0;
+    var LINEAR;
+    var BEST;
+}
+
+@:keep
+enum abstract TextureAccess(UInt32) from UInt32 to UInt32 {
+    var STAIC = 0;
+    var STREAMING;
+    var TARGET;
+}
+
+@:keep
+enum abstract TextureModulate(UInt32) from UInt32 to UInt32 {
+	var NONE = 0x00000000;     /**< No modulation */
+    var COLOR = 0x00000001;    /**< srcC = srcC * color */
+    var ALPHA = 0x00000002;     /**< srcA = srcA * alpha */
+}
+
+@:keep
+enum abstract RendererFlip(UInt32) to UInt32 from UInt32 {
+	var NONE = 0x00000000;
+    var HORIZONTAL = 0x00000001;
+    var VERTICAL = 0x00000002;
+}
+
+@:keep
+@:native("SDL_Renderer")
+@:include("vendor/include/Headers.h")
+extern class SDL_Renderer {}
+typedef Renderer = Pointer<SDL_Renderer>;
+
+@:keep
+@:native("SDL_Texture")
+@:include("vendor/include/Headers.h")
+extern class SDL_Texture {}
+typedef Texture = Pointer<SDL_Texture>;

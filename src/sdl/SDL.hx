@@ -548,6 +548,258 @@ extern class SDL {
 
 	
 
+	// SDL_blendmode.h
+	@:native("SDL_ComposeCustomBlendMode")
+	static function composeCustomBlendMode(srcColorFactor:BlendFactor, dstColorFactor:BlendFactor, colorOperation:BlendOperation, srcAlphaFactor:BlendFactor, dstAlphaFactor:BlendFactor, alphaOperation:BlendOperation):BlendMode;
+
+
+
+	// SDL_render.h
+	@:native("SDL_GetNumRenderDrivers")
+	static function getNumRenderDrivers():Int;
+
+	@:native("SDL_GetRenderDriverInfo")
+	@:noCompletion static function getRenderDriverInfo(index:Int, info:Pointer<RendererInfo>):Int;
+
+	@:native("SDL_CreateWindowAndRenderer")
+	static function createWindowAndRenderer(width:Int, height:Int, window_flags:UInt32, window:Pointer<Window>, renderer:Pointer<Renderer>):Int;
+
+	@:native("SDL_CreateRenderer")
+	static function createRenderer(window:Window, index:Int, flags:UInt32):Renderer;
+
+	@:native("SDL_CreateSoftwareRenderer")
+	@:noCompletion static function createSoftwareRenderer(surface:Pointer<Surface>):Renderer;
+
+	@:native("SDL_GetRenderer")
+	static function getRenderer(window:Window):Renderer;
+
+	@:native("SDL_RenderGetWindow")
+	static function renderGetWindow(renderer:Renderer):Window;
+
+	@:native("SDL_GetRendererInfo")
+	@:noCompletion static function getRendererInfo(renderer:Renderer, info:Pointer<RendererInfo>):Int;
+
+	@:native("SDL_GetRendererOutputSize")
+	@:noCompletion static function getRendererOutputSize(renderer:Renderer, w:Pointer<Int>, h:Pointer<Int>):Int;
+
+	@:native("SDL_CreateTexture")
+	static function createTexture(renderer:Renderer, format:UInt32, access:Int, w:Int, h:Int):Texture;
+
+	@:native("SDL_CreateTextureFromSurface")
+	@:noCompletion static function createTextureFromSurface(renderer:Renderer, surface:Pointer<Surface>):Texture;
+
+	@:native("SDL_QueryTexture")
+	@:noCompletion static function queryTexture(texture:Texture, format:Pointer<UInt32>, access:Pointer<Int>, w:Pointer<Int>, h:Pointer<Int>):Int;
+
+	@:native("SDL_SetTextureColorMod")
+	static function setTextureColorMod(texture:Texture, r:UInt8, g:UInt8, b:UInt8):Int;
+
+	@:native("SDL_GetTextureColorMod")
+	@:noCompletion static function getTextureColorMod(texture:Texture, r:Pointer<UInt8>, g:Pointer<UInt8>, b:Pointer<UInt8>):Int;
+
+	@:native("SDL_SetTextureAlphaMod")
+	static function setTextureAlphaMod(texture:Texture, alpha:UInt8):Int;
+
+	@:native("SDL_GetTextureAlphaMod")
+	@:noCompletion static function getTextureAlphaMod(texture:Texture, alpha:Pointer<UInt8>):Int;
+
+	@:native("SDL_SetTextureBlendMode")
+	static function setTextureBlendMode(texture:Texture, blendMode:BlendMode):Int;
+
+	@:native("SDL_GetTextureBlendMode")
+	@:noCompletion static function getTextureBlendMode(texture:Texture, blendMode:Pointer<BlendMode>):Int;
+
+	@:native("SDL_SetTextureScaleMode")
+	static function setTextureScaleMode(texture:Texture, scaleMode:ScaleMode):Int;
+
+	@:native("SDL_GetTextureScaleMode")
+	@:noCompletion static function getTextureScaleMode(texture:Texture, scaleMode:Pointer<ScaleMode>):Int;
+
+	@:native("SDL_SetTextureUserData")
+	@:noCompletion static function setTextureUserData(texture:Texture, userdata:Pointer<cpp.Void>):Int;
+
+	@:native("SDL_GetTextureUserData")
+	@:noCompletion static function getTextureUserData(texture:Texture):Pointer<cpp.Void>;
+
+	@:native("SDL_UpdateTexture")
+	@:noCompletion static function updateTexture(texture:Texture, rect:RawConstPointer<Rectangle>, pixels:RawConstPointer<cpp.Void>, pitch:Int):Int;
+
+	@:native("SDL_UpdateYUVTexture")
+	@:noCompletion static function updateYUVTexture(texture:Texture, rect:RawConstPointer<Rectangle>, Yplane:RawConstPointer<UInt8>, Ypitch:Int, Uplane:RawConstPointer<UInt8>, Upitch:Int, Vplane:RawConstPointer<UInt8>, Vpitch:Int):Int;
+
+	@:native("SDL_UpdateNVTexture")
+	@:noCompletion static function updateNVTexture(texture:Texture, rect:RawConstPointer<Rectangle>, Yplane:RawConstPointer<UInt8>, Ypitch:Int, UVplane:RawConstPointer<UInt8>, UVpitch:Int):Int;
+
+	@:native("SDL_LockTexture")
+	@:noCompletion static function lockTexture(texture:Texture, rect:RawConstPointer<Rectangle>, pixels:Pointer<Pointer<cpp.Void>>, pitch:Pointer<Int>):Int;
+
+	@:native("SDL_LockTextureToSurface")
+	@:noCompletion static function lockTextureToSurface(texture:Texture, rect:RawConstPointer<Rectangle>, surface:Pointer<Pointer<Surface>>):Int;
+
+	@:native("SDL_UnlockTexture")
+	static function unlockTexture(texture:Texture):Void;
+
+	@:native("SDL_RenderTargetSupported")
+	static function renderTargetSupported(renderer:Renderer):Boolean;
+
+	@:native("SDL_SetRenderTarget")
+	static function setRenderTarget(renderer:Renderer, texture:Texture):Int;
+
+	@:native("SDL_GetRenderTarget")
+	static function getRenderTarget(renderer:Renderer):Texture;
+
+	@:native("SDL_RenderSetLogicalSize")
+	static function renderSetLogicalSize(renderer:Renderer, w:Int, h:Int):Int;
+
+	@:native("SDL_RenderGetLogicalSize")
+	@:noCompletion static function renderGetLogicalSize(renderer:Renderer, w:Pointer<Int>, h:Pointer<Int>):Void;
+
+	@:native("SDL_RenderSetIntegerScale")
+	static function renderSetIntegerScale(renderer:Renderer, enable:Boolean):Int;
+
+	@:native("SDL_RenderGetIntegerScale")
+	static function renderGetIntegerScale(renderer:Renderer):Boolean;
+
+	@:native("SDL_RenderSetViewport")
+	@:noCompletion static function renderSetViewport(renderer:Renderer, rect:RawConstPointer<Rectangle>):Int;
+
+	@:native("SDL_RenderGetViewport")
+	@:noCompletion static function renderGetViewport(renderer:Renderer, rect:Pointer<Rectangle>):Void;
+
+	@:native("SDL_RenderSetClipRect")
+	@:noCompletion static function renderSetClipRect(renderer:Renderer, rect:RawConstPointer<Rectangle>):Int;
+
+	@:native("SDL_RenderGetClipRect")
+	@:noCompletion static function renderGetClipRect(renderer:Renderer, rect:Pointer<Rectangle>):Void;
+
+	@:native("SDL_RenderIsClipEnabled")
+	static function renderIsClipEnabled(renderer:Renderer):Boolean;
+
+	@:native("SDL_RenderSetScale")
+	static function renderSetScale(renderer:Renderer, scaleX:Float, scaleY:Float):Int;
+
+	@:native("SDL_RenderGetScale")
+	@:noCompletion static function renderGetScale(renderer:Renderer, scaleX:Pointer<Float>, scaleY:Pointer<Float>):Void;
+
+	@:native("SDL_RenderWindowToLogical")
+	@:noCompletion static function renderWindowToLogical(renderer:Renderer, windowX:Int, windowY:Int, logicalX:Pointer<Float>, logicalY:Pointer<Float>):Void;
+
+	@:native("SDL_RenderLogicalToWindow")
+	@:noCompletion static function renderLogicalToWindow(renderer:Renderer, logicalX:Float, logicalY:Float, windowX:Pointer<Int>, windowY:Pointer<Int>):Void;
+
+	@:native("SDL_SetRenderDrawColor")
+	static function setRenderDrawColor(renderer:Renderer, r:UInt8, g:UInt8, b:UInt8, a:UInt8):Int;
+
+	@:native("SDL_GetRenderDrawColor")
+	@:noCompletion static function getRenderDrawColor(renderer:Renderer, r:Pointer<UInt8>, g:Pointer<UInt8>, b:Pointer<UInt8>, a:Pointer<UInt8>):Int;
+
+	@:native("SDL_SetRenderDrawBlendMode")
+	static function setRenderDrawBlendMode(renderer:Renderer, blendMode:BlendMode):Int;
+
+	@:native("SDL_GetRenderDrawBlendMode")
+	@:noCompletion static function getRenderDrawBlendMode(renderer:Renderer, blendMode:Pointer<BlendMode>):Int;
+
+	@:native("SDL_RenderClear")
+	static function renderClear(renderer:Renderer):Int;
+
+	@:native("SDL_RenderDrawPoint")
+	static function renderDrawPoint(renderer:Renderer, x:Int, y:Int):Int;
+
+	@:native("SDL_RenderDrawPoints")
+	@:noCompletion static function renderDrawPoints(renderer:Renderer, points:RawConstPointer<Point>, count:Int):Int;
+
+	@:native("SDL_RenderDrawLine")
+	static function renderDrawLine(renderer:Renderer, x1:Int, y1:Int, x2:Int, y2:Int):Int;
+
+	@:native("SDL_RenderDrawLines")
+	@:noCompletion static function renderDrawLines(renderer:Renderer, points:RawConstPointer<Point>, count:Int):Int;
+
+	@:native("SDL_RenderDrawRect")
+	@:noCompletion static function renderDrawRect(renderer:Renderer, rect:RawConstPointer<Rectangle>):Int;
+
+	@:native("SDL_RenderDrawRects")
+	@:noCompletion static function renderDrawRects(renderer:Renderer, rects:RawConstPointer<Rectangle>, count:Int):Int;
+
+	@:native("SDL_RenderFillRect")
+	@:noCompletion static function renderFillRect(renderer:Renderer, rect:RawConstPointer<Rectangle>):Int;
+
+	@:native("SDL_RenderFillRects")
+	@:noCompletion static function renderFillRects(renderer:Renderer, rects:RawConstPointer<Rectangle>, count:Int):Int;
+
+	@:native("SDL_RenderCopy")
+	@:noCompletion static function renderCopy(renderer:Renderer, texture:Texture, srcrect:RawConstPointer<Rectangle>, dstrect:RawConstPointer<Rectangle>):Int;
+
+	@:native("SDL_RenderCopyEx")
+	@:noCompletion static function renderCopyEx(renderer:Renderer, texture:Texture, srcrect:RawConstPointer<Rectangle>, dstrect:RawConstPointer<Rectangle>, angle:cpp.Float64, center:RawConstPointer<Point>, flip:RendererFlip):Int;
+
+	@:native("SDL_RenderDrawPointF")
+	static function renderDrawPointF(renderer:Renderer, x:Float, y:Float):Int;
+
+	@:native("SDL_RenderDrawPointsF")
+	@:noCompletion static function renderDrawPointsF(renderer:Renderer, points:RawConstPointer<FloatPoint>, count:Int):Int;
+
+	@:native("SDL_RenderDrawLineF")
+	static function renderDrawLineF(renderer:Renderer, x1:Float, y1:Float, x2:Float, y2:Float):Int;
+
+	@:native("SDL_RenderDrawLinesF")
+	@:noCompletion static function renderDrawLinesF(renderer:Renderer, points:RawConstPointer<FloatPoint>, count:Int):Int;
+
+	@:native("SDL_RenderDrawRectF")
+	@:noCompletion static function renderDrawRectF(renderer:Renderer, rect:RawConstPointer<FloatRectangle>):Int;
+
+	@:native("SDL_RenderDrawRectsF")
+	@:noCompletion static function renderDrawRectsF(renderer:Renderer, rects:RawConstPointer<FloatRectangle>, count:Int):Int;
+
+	@:native("SDL_RenderFillRectF")
+	@:noCompletion static function renderFillRectF(renderer:Renderer, rect:RawConstPointer<FloatRectangle>):Int;
+
+	@:native("SDL_RenderFillRectsF")
+	@:noCompletion static function renderFillRectsF(renderer:Renderer, rects:RawConstPointer<FloatRectangle>, count:Int):Int;
+
+	@:native("SDL_RenderCopyF")
+	@:noCompletion static function renderCopyF(renderer:Renderer, texture:Texture, srcrect:RawConstPointer<Rectangle>, dstrect:RawConstPointer<FloatRectangle>):Int;
+
+	@:native("SDL_RenderCopyExF")
+	@:noCompletion static function renderCopyExF(renderer:Renderer, texture:Texture, srcrect:RawConstPointer<Rectangle>, dstrect:RawConstPointer<FloatRectangle>, angle:cpp.Float64, center:RawConstPointer<FloatPoint>, flip:RendererFlip):Int;
+
+	@:native("SDL_RenderGeometry")
+	@:noCompletion static function renderGeometry(renderer:Renderer, texture:Texture, vertices:RawConstPointer<Vertex>, num_vertices:Int, indices:RawConstPointer<Int>, num_indices:Int):Int;
+
+	@:native("SDL_RenderGeometryRaw")
+	@:noCompletion static function renderGeometryRaw(renderer:Renderer, texture:Texture, xy:RawConstPointer<Float>, xy_stride:Int, color:RawConstPointer<Color>, color_stride:Int, uv:RawConstPointer<Float>, uv_stride:Int, num_vertices:Int, indices:RawConstPointer<cpp.Void>, num_indices:Int, size_indices:Int):Int;
+
+	@:native("SDL_RenderReadPixels")
+	@:noCompletion static function renderReadPixels(renderer:Renderer, rect:RawConstPointer<Rectangle>, format:UInt32, pixels:Pointer<cpp.Void>, pitch:Int):Int;
+
+	@:native("SDL_RenderPresent")
+	static function renderPresent(renderer:Renderer):Void;
+
+	@:native("SDL_DestroyTexture")
+	static function destroyTexture(texture:Texture):Void;
+
+	@:native("SDL_DestroyRenderer")
+	static function destroyRenderer(renderer:Renderer):Void;
+
+	@:native("SDL_RenderFlush")
+	static function renderFlush(renderer:Renderer):Int;
+
+	@:native("SDL_GL_BindTexture")
+	@:noCompletion static function glBindTexture(texture:Texture, texw:Pointer<Float>, texh:Pointer<Float>):Int;
+
+	@:native("SDL_GL_UnbindTexture")
+	static function glUnbindTexture(texture:Texture):Int;
+
+	@:native("SDL_RenderGetMetalLayer")
+	@:noCompletion static function renderGetMetalLayer(renderer:Renderer):Pointer<cpp.Void>;
+
+	@:native("SDL_RenderGetMetalCommandEncoder")
+	@:noCompletion static function renderGetMetalCommandEncoder(renderer:Renderer):Pointer<cpp.Void>;
+
+	@:native("SDL_RenderSetVSync")
+	static function renderSetVSync(renderer:Renderer, vsync:Int):Int;
+
+
+
 	// extras
 	@:native("SDL_Event")
 	static inline function createEventPtr():Event {
@@ -664,15 +916,6 @@ enum abstract PixelFormatEnum(UInt32) from UInt32 to UInt32 {
 	var ARGB2101010 = definePixelFormat(PixelType.PACKED32, PackedOrder.ARGB, PackedLayout.LAYOUT_2101010, 32, 4);
 }
 
-@:keep
-enum abstract TextureAccess(Int) from Int to Int {
-	/** Changes rarely, not lockable **/
-	var STATIC = 0;
-	/** Changes frequently, lockable **/ 
-    var STREAMING;
-	/** Texture can be used as a render target **/
-    var RENDER_TARGET;
-}
 
 @:keep
 enum abstract TextureScaleMode(Int) from Int to Int {
@@ -698,6 +941,19 @@ extern class Point {
 }
 
 @:keep
+@:native("SDL_FPoint")
+@:include("vendor/include/Headers.h")
+@:structAccess
+extern class FloatPoint {
+	public var x:Float;
+	public var y:Float;
+
+	public static inline function create(x:Float, y:Float):Point {
+		return cast untyped __cpp__("SDL_FPoint{ (float){0}, (float){1} }", x, y);
+	}
+}
+
+@:keep
 @:native("SDL_Rect")
 @:include("vendor/include/Headers.h")
 @:structAccess
@@ -713,6 +969,21 @@ extern class Rectangle {
 }
 
 @:keep
+@:native("SDL_Rect")
+@:include("vendor/include/Headers.h")
+@:structAccess
+extern class FloatRectangle {
+	public var x:Float;
+	public var y:Float;
+	public var w:Float;
+	public var h:Float;
+
+	public static inline function create(x:Float, y:Float, w:Float, h:Float):FloatRectangle {
+		return cast untyped __cpp__("SDL_Rect{ (float){0}, (float){1}, (float){2}, (float){3} }", x, y, w, h);
+	}
+}
+
+@:keep
 @:native("SDL_Color")
 @:include("vendor/include/Headers.h")
 @:structAccess
@@ -723,7 +994,7 @@ extern class Color {
 	public var a:UInt8;
 
 	public static inline function create(r:UInt8, g:UInt8, b:UInt8, a:UInt8):Color {
-		return cast untyped __cpp__("SDL_Color{ (Uint8){0}, (Uint8){1}, (Uint8){2}, (Uint8){3} }", r, g, b, a);
+		return cast untyped __cpp__("SDL_Color{ (unsigned char){0}, (unsigned char){1}, (unsigned char){2}, (unsigned char){3} }", r, g, b, a);
 	}
 }
 

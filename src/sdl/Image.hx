@@ -1,6 +1,6 @@
 package sdl;
 
-import sdl.SDL.Boolean;
+import sdl.Types.Boolean;
 import cpp.ConstCharStar;
 
 @:keep
