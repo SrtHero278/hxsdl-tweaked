@@ -58,15 +58,9 @@ extern class SDL {
 		untyped __cpp__("SDL_AddHintCallback({0}, {1}, {2})", name, callback, userdata);
 	}
 
-	@:native("SDL_AddHintCallback")
-	@:noCompletion static function _addHintCallback(name:ConstCharStar, callback:HintCallback, userdata:Pointer<cpp.Void>):Void;
-
 	static inline function deleteHintCallback(name:ConstCharStar, callback:HintCallback, userdata:Any) {
 		untyped __cpp__("SDL_DelHintCallback({0}, {1}, {2})", name, callback, userdata);
 	}
-
-	@:native("SDL_DelHintCallback")
-	@:noCompletion static function _delHintCallback(name:ConstCharStar, callback:HintCallback, userdata:Pointer<cpp.Void>):Void;
 
 	@:native("SDL_ClearHints")
 	static function clearHints():Void;
@@ -127,15 +121,10 @@ extern class SDL {
 		return untyped __cpp__("_func");
 	}
 
-	@:native("SDL_LogGetOutputFunction")
-	@:noCompletion static function _getOutputFunction(callback:Pointer<LogOutputFunction>, userdata:Pointer<Pointer<cpp.Void>>):Void;
 
 	static inline function setOutputFunction(callback:LogOutputFunction, userdata:Any):Void {
 		untyped __cpp__("SDL_LogSetOutputFunction({0}, {1})", callback, userdata);
 	}
-
-	@:native("SDL_LogSetOutputFunction")
-	@:noCompletion static function _setOutputFunction(callback:LogOutputFunction, userdata:Pointer<cpp.Void>):Void;
 
 	@:native("SDL_MAJOR_VERSION")
 	static final majorVersion:Int;
@@ -191,17 +180,11 @@ extern class SDL {
 		return (result == 0) ? untyped __cpp__("_rect") : null;
 	}
 
-	@:native("SDL_GetDisplayBounds")
-	@:noCompletion static function _getDisplayBounds(displayIndex:Int, rect:Pointer<Rectangle>):Int;
-
 	static inline function getDisplayUsableBounds(displayIndex:Int):Rectangle {
 		var result:Int;
 		untyped __cpp__("SDL_Rect _rect; {1} = SDL_GetDisplayUsableBounds({0}, &_rect)", displayIndex, result);
 		return (result == 0) ? untyped __cpp__("_rect") : null;
 	}
-
-	@:native("SDL_GetDisplayUsableBounds")
-	@:noCompletion static function _getDisplayUsableBounds(displayIndex:Int, rect:Pointer<Rectangle>):Int;
 
 	@:native("SDL_GetDisplayDPI")
 	static function getDisplayDPI(displayIndex:Int, ddpi:Pointer<Float>, hdpi:Pointer<Float>, vdpi:Pointer<Float>):Int;
@@ -218,26 +201,17 @@ extern class SDL {
 		return (result == 0) ? untyped __cpp__("_mode") : null;
 	}
 
-	@:native("SDL_GetDisplayMode")
-	@:noCompletion static function _getDisplayMode(displayIndex:Int, modeIndex:Int, mode:Pointer<DisplayMode>):Int;
-
 	static inline function getDesktopDisplayMode(displayIndex:Int):DisplayMode {
 		var result:Int;
 		untyped __cpp__("SDL_DisplayMode _mode; {0} = SDL_GetDesktopDisplayMode({1}, &_mode)", result, displayIndex);
 		return (result == 0) ? untyped __cpp__("_mode") : null;
 	}
 
-	@:native("SDL_GetDesktopDisplayMode")
-	@:noCompletion static function _getDesktopDisplayMode(displayIndex:Int, mode:Pointer<DisplayMode>):Int;
-
 	static inline function getCurrentDisplayMode(displayIndex:Int):DisplayMode {
 		var result:Int;
 		untyped __cpp__("SDL_DisplayMode _mode; {0} = SDL_GetCurrentDisplayMode({1}, &_mode)", result, displayIndex);
 		return (result == 0) ? untyped __cpp__("_mode") : null;
 	}
-
-	@:native("SDL_GetCurrentDisplayMode")
-	@:noCompletion static function _getCurrentDisplayMode(displayIndex:Int, mode:Pointer<DisplayMode>):Int;
 
 	@:native("SDL_GetClosestDisplayMode")
 	static function getClosestDisplayMode(displayIndex:Int, mode:RawConstPointer<DisplayMode>, closest:Pointer<DisplayMode>):Pointer<DisplayMode>;
@@ -246,15 +220,9 @@ extern class SDL {
 		return untyped __cpp__("SDL_GetPointDisplayIndex(&{0})", point);
 	}
 
-	@:native("SDL_GetPointDisplayIndex")
-	static function _getPointDisplayIndex(point:RawConstPointer<Point>):Int;
-
 	static inline function getRectDisplayIndex(rect:Rectangle):Int {
 		return untyped __cpp__("SDL_GetRectDisplayIndex(&{0})", rect);
 	}
-
-	@:native("SDL_GetRectDisplayIndex")
-	static function _getRectDisplayIndex(rect:RawConstPointer<Rectangle>):Int;
 
 	@:native("SDL_GetWindowDisplayIndex")
 	static function getWindowDisplayIndex(window:Window):Int;
@@ -263,24 +231,15 @@ extern class SDL {
 		return untyped __cpp__("SDL_SetWindowDisplayMode({0}, &{1})", window, mode);
 	}
 
-	@:native("SDL_SetWindowDisplayMode")
-	@:noCompletion static function _setWindowDisplayMode(window:Window, mode:RawConstPointer<DisplayMode>):Int;
-
 	static inline function getWindowDisplayMode(window:Window):DisplayMode {
 		var result:Int;
 		untyped __cpp__("SDL_DisplayMode _mode; {0} = SDL_GetWindowDisplayMode({1}, &_mode)", result, window);
 		return (result == 0) ? untyped __cpp__("_mode") : null;
 	}
 
-	@:native("SDL_GetWindowDisplayMode")
-	@:noCompletion static function _getWindowDisplayMode(window:Window, mode:Pointer<DisplayMode>):Int;
-
 	static inline function getWindowICCProfile(window:Window, size:UInt64):Any {
 		return untyped __cpp__("SDL_GetWindowICCProfile({0}, &{1})", window, size);
 	}
-
-	@:native("SDL_GetWindowICCProfile")
-	@:noCompletion static function _getWindowICCProfile(window:Window, size:cpp.RawPointer<UInt64>):Pointer<cpp.Void>;
 
 	@:native("SDL_GetWindowPixelFormat")
 	static function getWindowPixelFormat(window:Window):UInt32;
@@ -289,11 +248,8 @@ extern class SDL {
 	static function createWindow(title:ConstCharStar, x:Int, y:Int, w:Int, h:Int, flags:UInt32):Window;
 
 	static inline function createWindowFrom(data:Any):Window {
-		return untyped __cpp__("SDL_CreateWindowFrom((void*){0})", data);
+		return untyped __cpp__("SDL_CreateWindowFrom({0})", data);
 	}
-
-	@:native("SDL_CreateWindowFrom")
-	@:noCompletion static function _createWindowFrom(data:RawConstPointer<cpp.Void>):Window;
 
 	@:native("SDL_GetWindowID")
 	static function getWindowID(window:Window):UInt32;
@@ -317,15 +273,9 @@ extern class SDL {
 		return untyped __cpp__("SDL_SetWindowData({0}, {1}, {2})", window, name, userdata);
 	}
 
-	@:native("SDL_SetWindowData")
-	@:noCompletion static function _setWindowData(window:Window, name:ConstCharStar, userdata:Pointer<cpp.Void>):Pointer<cpp.Void>;
-
 	static inline function getWindowData(window:Window, name:ConstCharStar):Any {
 		return untyped __cpp__("SDL_GetWindowData({0}, {1})", window, name);
 	}
-
-	@:native("SDL_GetWindowData")
-	@:noCompletion static function _getWindowData(window:Window, name:ConstCharStar):Pointer<cpp.Void>;
 
 	@:native("SDL_SetWindowPosition")
 	static function setWindowPosition(window:Window, x:Int, y:Int):Void;
@@ -427,15 +377,9 @@ extern class SDL {
 		return untyped __cpp__("SDL_SetWindowMouseRect({0}, {1})", window, rect);
 	}
 
-	@:native("SDL_SetWindowMouseRect")
-	@:noCompletion static function _setWindowMouseRect(window:Window, rect:RawConstPointer<Rectangle>):Int;
-
 	static inline function getWindowMouseRect(window:Window):Rectangle {
 		return untyped __cpp__("SDL_GetWindowMouseRect({0})", window);
 	}
-
-	@:native("SDL_GetWindowMouseRect")
-	@:noCompletion static function _getWindowMouseRect(window:Window):RawConstPointer<Rectangle>;
 
 	@:native("SDL_SetWindowBrightness")
 	static function setWindowBrightness(window:Window, brightness:Float):Int;
@@ -450,9 +394,6 @@ extern class SDL {
 		untyped __cpp__("float _opac; SDL_GetWindowOpacity({0}, &_opac)", window);
 		return untyped __cpp__("_opac");
 	}
-
-	@:native("SDL_GetWindowOpacity")
-	@:noCompletion static function _getWindowOpacity(window:Window, outOpacity:Pointer<Float>):Int;
 
 	@:native("SDL_SetWindowModalFor")
 	static function setWindowModalFor(modal_window:Window, parent_window:Window):Int;
@@ -469,9 +410,6 @@ extern class SDL {
 	static inline function setWindowHitTest(window:Window, callback:HitTest, callbackData:Any):Int {
 		return untyped __cpp__("SDL_SetWindowHitTest({0}, {1}, {2})", window, callback, callbackData);
 	}
-
-	@:native("SDL_SetWindowHitTest")
-	@:noCompletion static function _setWindowHitTest(window:Window, callback:HitTest, callbackData:Pointer<cpp.Void>):Int;
 
 	@:native("SDL_FlashWindow")
 	static function flashWindow(window:Window, operation:FlashOperation):Int;
@@ -495,9 +433,6 @@ extern class SDL {
 		return untyped __cpp__("SDL_GL_GetProcAddress({0})", proc);
 	}
 
-	@:native("SDL_GL_GetProcAddress")
-	@:noCompletion static function _glGetProcAddress(proc:ConstCharStar):Pointer<cpp.Void>;
-
 	@:native("SDL_GL_UnloadLibrary")
 	static function glUnloadLibrary():Void;
 
@@ -515,9 +450,6 @@ extern class SDL {
 		untyped __cpp__("int _val; {0} = SDL_GL_GetAttribute({1}, &_val)", result, attr);
 		return (result == 0) ? untyped __cpp__("_val") : null;
 	}
-
-	@:native("SDL_GL_GetAttribute")
-	@:noCompletion static function _glGetAttribute(attr:GlAttribute, value:Pointer<Int>):Int;
 
 	@:native("SDL_GL_CreateContext")
 	static function glCreateContext(window:Window):GlContext;
@@ -558,8 +490,11 @@ extern class SDL {
 	@:native("SDL_GetNumRenderDrivers")
 	static function getNumRenderDrivers():Int;
 
-	@:native("SDL_GetRenderDriverInfo")
-	@:noCompletion static function getRenderDriverInfo(index:Int, info:Pointer<RendererInfo>):Int;
+	static inline function getRenderDriverInfo(index:Int):RendererInfo {
+		var result:Int;
+		untyped __cpp__("SDL_RendererInfo _info; {0} = SDL_GetRenderDriverInfo({1}, &_info)", result, index);
+		return (result == 0) ? untyped __cpp__("_info") : null;
+	}
 
 	@:native("SDL_CreateWindowAndRenderer")
 	static function createWindowAndRenderer(width:Int, height:Int, window_flags:UInt32, window:Pointer<Window>, renderer:Pointer<Renderer>):Int;
@@ -568,7 +503,7 @@ extern class SDL {
 	static function createRenderer(window:Window, index:Int, flags:UInt32):Renderer;
 
 	@:native("SDL_CreateSoftwareRenderer")
-	@:noCompletion static function createSoftwareRenderer(surface:Pointer<Surface>):Renderer;
+	static function createSoftwareRenderer(surface:Surface):Renderer;
 
 	@:native("SDL_GetRenderer")
 	static function getRenderer(window:Window):Renderer;
@@ -576,65 +511,79 @@ extern class SDL {
 	@:native("SDL_RenderGetWindow")
 	static function renderGetWindow(renderer:Renderer):Window;
 
-	@:native("SDL_GetRendererInfo")
-	@:noCompletion static function getRendererInfo(renderer:Renderer, info:Pointer<RendererInfo>):Int;
+	static inline function getRendererInfo(renderer:Renderer):RendererInfo {
+		var result:Int;
+		untyped __cpp__("SDL_RendererInfo _info; {0} = SDL_GetRendererInfo({1}, &_info)", result, renderer);
+		return (result == 0) ? untyped __cpp__("_info") : null;
+	}
 
 	@:native("SDL_GetRendererOutputSize")
-	@:noCompletion static function getRendererOutputSize(renderer:Renderer, w:Pointer<Int>, h:Pointer<Int>):Int;
+	static function getRendererOutputSize(renderer:Renderer, w:Pointer<Int>, h:Pointer<Int>):Int;
 
 	@:native("SDL_CreateTexture")
 	static function createTexture(renderer:Renderer, format:UInt32, access:Int, w:Int, h:Int):Texture;
 
 	@:native("SDL_CreateTextureFromSurface")
-	@:noCompletion static function createTextureFromSurface(renderer:Renderer, surface:Pointer<Surface>):Texture;
+	static function createTextureFromSurface(renderer:Renderer, surface:Surface):Texture;
 
 	@:native("SDL_QueryTexture")
-	@:noCompletion static function queryTexture(texture:Texture, format:Pointer<UInt32>, access:Pointer<Int>, w:Pointer<Int>, h:Pointer<Int>):Int;
+	static function queryTexture(texture:Texture, format:Pointer<UInt32>, access:Pointer<Int>, w:Pointer<Int>, h:Pointer<Int>):Int;
 
 	@:native("SDL_SetTextureColorMod")
 	static function setTextureColorMod(texture:Texture, r:UInt8, g:UInt8, b:UInt8):Int;
 
 	@:native("SDL_GetTextureColorMod")
-	@:noCompletion static function getTextureColorMod(texture:Texture, r:Pointer<UInt8>, g:Pointer<UInt8>, b:Pointer<UInt8>):Int;
+	static function getTextureColorMod(texture:Texture, r:Pointer<UInt8>, g:Pointer<UInt8>, b:Pointer<UInt8>):Int;
 
 	@:native("SDL_SetTextureAlphaMod")
 	static function setTextureAlphaMod(texture:Texture, alpha:UInt8):Int;
 
-	@:native("SDL_GetTextureAlphaMod")
-	@:noCompletion static function getTextureAlphaMod(texture:Texture, alpha:Pointer<UInt8>):Int;
+	static inline function getTextureAlphaMod(texture:Texture):UInt8 {
+		var result:Int;
+		untyped __cpp__("unsigned char _mod; {0} = SDL_GetTextureAlphaMod({1}, &_mod)", result, texture);
+		return (result == 0) ? untyped __cpp__("_mod") : null;
+	}
 
 	@:native("SDL_SetTextureBlendMode")
 	static function setTextureBlendMode(texture:Texture, blendMode:BlendMode):Int;
 
-	@:native("SDL_GetTextureBlendMode")
-	@:noCompletion static function getTextureBlendMode(texture:Texture, blendMode:Pointer<BlendMode>):Int;
+	static inline function getTextureBlendMode(texture:Texture):BlendMode {
+		var result:Int;
+		untyped __cpp__("SDL_BlendMode _mode; {0} = SDL_GetTextureBlendMode({1}, &_mode)", result, texture);
+		return (result == 0) ? untyped __cpp__("_mode") : null;
+	}
 
 	@:native("SDL_SetTextureScaleMode")
 	static function setTextureScaleMode(texture:Texture, scaleMode:ScaleMode):Int;
 
-	@:native("SDL_GetTextureScaleMode")
-	@:noCompletion static function getTextureScaleMode(texture:Texture, scaleMode:Pointer<ScaleMode>):Int;
+	static inline function getTextureScaleMode(texture:Texture):ScaleMode {
+		var result:Int;
+		untyped __cpp__("SDL_ScaleMode _mode; {0} = SDL_GetTextureScaleMode({1}, &_mode)", result, texture);
+		return (result == 0) ? untyped __cpp__("_mode") : null;
+	}
 
-	@:native("SDL_SetTextureUserData")
-	@:noCompletion static function setTextureUserData(texture:Texture, userdata:Pointer<cpp.Void>):Int;
+	static inline function setTextureUserData(texture:Texture, userdata:Any):Int {
+		return untyped __cpp__("SDL_SetTextureUserData({0}, {1})", texture, userdata);
+	}
 
-	@:native("SDL_GetTextureUserData")
-	@:noCompletion static function getTextureUserData(texture:Texture):Pointer<cpp.Void>;
+	static inline function getTextureUserData<T>(texture:Texture):T {
+		return cast untyped __cpp__("SDL_GetTextureUserData({0})", texture);
+	}
 
 	@:native("SDL_UpdateTexture")
-	@:noCompletion static function updateTexture(texture:Texture, rect:RawConstPointer<Rectangle>, pixels:RawConstPointer<cpp.Void>, pitch:Int):Int;
+	static function updateTexture(texture:Texture, rect:RawConstPointer<Rectangle>, pixels:RawConstPointer<cpp.Void>, pitch:Int):Int;
 
 	@:native("SDL_UpdateYUVTexture")
-	@:noCompletion static function updateYUVTexture(texture:Texture, rect:RawConstPointer<Rectangle>, Yplane:RawConstPointer<UInt8>, Ypitch:Int, Uplane:RawConstPointer<UInt8>, Upitch:Int, Vplane:RawConstPointer<UInt8>, Vpitch:Int):Int;
+	static function updateYUVTexture(texture:Texture, rect:RawConstPointer<Rectangle>, Yplane:RawConstPointer<UInt8>, Ypitch:Int, Uplane:RawConstPointer<UInt8>, Upitch:Int, Vplane:RawConstPointer<UInt8>, Vpitch:Int):Int;
 
 	@:native("SDL_UpdateNVTexture")
-	@:noCompletion static function updateNVTexture(texture:Texture, rect:RawConstPointer<Rectangle>, Yplane:RawConstPointer<UInt8>, Ypitch:Int, UVplane:RawConstPointer<UInt8>, UVpitch:Int):Int;
+	static function updateNVTexture(texture:Texture, rect:RawConstPointer<Rectangle>, Yplane:RawConstPointer<UInt8>, Ypitch:Int, UVplane:RawConstPointer<UInt8>, UVpitch:Int):Int;
 
 	@:native("SDL_LockTexture")
-	@:noCompletion static function lockTexture(texture:Texture, rect:RawConstPointer<Rectangle>, pixels:Pointer<Pointer<cpp.Void>>, pitch:Pointer<Int>):Int;
+	static function lockTexture(texture:Texture, rect:RawConstPointer<Rectangle>, pixels:Pointer<Pointer<cpp.Void>>, pitch:Pointer<Int>):Int;
 
 	@:native("SDL_LockTextureToSurface")
-	@:noCompletion static function lockTextureToSurface(texture:Texture, rect:RawConstPointer<Rectangle>, surface:Pointer<Pointer<Surface>>):Int;
+	static function lockTextureToSurface(texture:Texture, rect:RawConstPointer<Rectangle>, surface:Pointer<Pointer<Surface>>):Int;
 
 	@:native("SDL_UnlockTexture")
 	static function unlockTexture(texture:Texture):Void;
@@ -652,7 +601,7 @@ extern class SDL {
 	static function renderSetLogicalSize(renderer:Renderer, w:Int, h:Int):Int;
 
 	@:native("SDL_RenderGetLogicalSize")
-	@:noCompletion static function renderGetLogicalSize(renderer:Renderer, w:Pointer<Int>, h:Pointer<Int>):Void;
+	static function renderGetLogicalSize(renderer:Renderer, w:Pointer<Int>, h:Pointer<Int>):Void;
 
 	@:native("SDL_RenderSetIntegerScale")
 	static function renderSetIntegerScale(renderer:Renderer, enable:Boolean):Int;
