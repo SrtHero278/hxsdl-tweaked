@@ -748,6 +748,59 @@ extern class SDL {
 	static function renderSetVSync(renderer:Renderer, vsync:Int):Int;
 
 
+	// SDL_pixels.h
+	@:native("SDL_GetPixelFormatName")
+	static function getPixelFormatName(format:UInt32):ConstCharStar;
+
+	@:native("SDL_PixelFormatEnumToMasks")
+	static function pixelFormatEnumToMasks(format:UInt32, bitsPerPixel:Pointer<Int>, Rmask:Pointer<UInt32>, Gmask:Pointer<UInt32>, Bmask:Pointer<UInt32>, Amask:Pointer<UInt32>):Boolean;
+
+	@:native("SDL_MasksToPixelFormatEnum")
+	static function masksToPixelFormatEnum(bitsPerPixel:Int, Rmask:UInt32, Gmask:UInt32, Bmask:UInt32, Amask:UInt32):UInt32;
+
+	@:native("SDL_AllocFormat")
+	static function allocFormat(pixelFormat:PixelFormatEnum):PixelFormat;
+
+	@:native("SDL_FreeFormat")
+	static function freeFormat(format:PixelFormat):Void;
+
+	@:native("SDL_AllocPalette")
+	static function allocPalette(numColors:Int):Palette;
+
+	@:native("SDL_SetPixelFormatPalette")
+	static function setPixelFormatPalette(format:PixelFormat, palette:Palette):Int;
+
+	@:native("SDL_SetPaletteColors")
+	inline static function setPaletteColors(palette:Palette, colors:Array<Color>, firstColor:Int, numColors:Int):Int {
+		untyped __cpp__("
+			SDL_Color* _colors = (SDL_Color*)malloc({2} * sizeof(SDL_Color));
+			for (int i = 0; i < {2}; i++)
+				_colors[i] = {1}->__get(i);
+			int _result = SDL_SetPaletteColors({0}, _colors, {3}, {4});
+			free(_colors)", palette, colors, colors.length, firstColor, numColors);
+    	return untyped __cpp__("_result");
+	}
+
+	@:native("SDL_FreePalette")
+	static function freePalette(palette:Palette):Void;
+
+	@:native("SDL_MapRGB")
+	static function mapRGB(format:PixelFormat, r:UInt8, g:UInt8, b:UInt8):UInt32;
+
+	@:native("SDL_MapRGBA")
+	static function mapRGBA(format:PixelFormat, r:UInt8, g:UInt8, b:UInt8, a:UInt8):UInt32;
+
+	@:native("SDL_GetRGB")
+	static function getRGB(pixel:UInt32, format:PixelFormat, r:Pointer<UInt8>, g:Pointer<UInt8>, b:Pointer<UInt8>):Void;
+
+	@:native("SDL_GetRGBA")
+	static function getRGBA(pixel:UInt32, format:PixelFormat, r:Pointer<UInt8>, g:Pointer<UInt8>, b:Pointer<UInt8>, a:Pointer<UInt8>):Void;
+
+	inline static function calculateGammaRamp(gamma:Float):UInt16 {
+		untyped __cpp__("unsigned short _ramp;\nSDL_CalculateGammaRamp({0}, &_ramp)", gamma);
+		return untyped __cpp__("_ramp");
+	}
+
 
 	// extras
 	@:native("SDL_Event")
@@ -756,113 +809,6 @@ extern class SDL {
 		untyped __cpp__('SDL_Event __sdl_ev__; {0} = &__sdl_ev__', event);
 		return event;
 	}
-}
-
-@:keep
-enum abstract PixelType(UInt32) from UInt32 to UInt32 {
-	var UNKNOWN = 0;
-	var INDEX1;
-	var INDEX4;
-	var INDEX8;
-	var PACKED8;
-	var PACKED16;
-	var PACKED32;
-	var ARRAYU8;
-	var ARRAYU16;
-	var ARRAYU32;
-	var ARRAYF16;
-	var ARRAYF32;
-}
-
-@:keep
-enum abstract BitmapOrder(UInt32) from UInt32 to UInt32 {
-	var ORDER_NONE = 0;
-	var ORDER_4321;
-	var ORDER_1234;
-}
-
-@:keep
-enum abstract PackedOrder(UInt32) from UInt32 to UInt32 {
-	var NONE = 0;
-	var XRGB;
-	var RGBX;
-	var ARGB;
-	var RGBA;
-	var XBGR;
-	var BGRX;
-	var ABGR;
-	var BGRA;
-}
-
-@:keep
-enum abstract ArrayOrder(UInt32) from UInt32 to UInt32 {
-	var NONE = 0;
-	var RGB;
-	var RGBA;
-	var ARGB;
-	var BGR;
-	var BGRA;
-	var ABGR;
-}
-
-@:keep
-enum abstract PackedLayout(UInt32) from UInt32 to UInt32 {
-	var LAYOUT_NONE = 0;
-	var LAYOUT_332;
-	var LAYOUT_4444;
-	var LAYOUT_1555;
-	var LAYOUT_5551;
-	var LAYOUT_565;
-	var LAYOUT_8888;
-	var LAYOUT_2101010;
-	var LAYOUT_1010102;
-}
-
-// i almost went insane making this fucking enum
-@:keep
-enum abstract PixelFormatEnum(UInt32) from UInt32 to UInt32 {
-	private static inline function definePixelFormat(type:Int, order:Int, layout:Int, bits:Int, bytes:Int) {
-		return (1 << 28) | ((type) << 24) | ((order) << 20) | ((layout) << 16) | ((bits) << 8) | ((bytes) << 0);
-	}
-
-	var UNKNOWN = 0;
-	var INDEX1LSB = definePixelFormat(PixelType.INDEX1, BitmapOrder.ORDER_4321, 0, 1, 0);
-	var INDEX1MSB = definePixelFormat(PixelType.INDEX1, BitmapOrder.ORDER_1234, 0, 1, 0);
-	var INDEX4LSB = definePixelFormat(PixelType.INDEX4, BitmapOrder.ORDER_4321, 0, 4, 0);
-	var INDEX4MSB = definePixelFormat(PixelType.INDEX4, BitmapOrder.ORDER_1234, 0, 4, 0);
-	var INDEX8 = definePixelFormat(PixelType.INDEX8, 0, 0, 8, 1);
-	var RGB332 = definePixelFormat(PixelType.PACKED8, PackedOrder.XRGB, PackedLayout.LAYOUT_332, 8, 1);
-	var XRGB4444 = definePixelFormat(PixelType.PACKED16, PackedOrder.XRGB, PackedLayout.LAYOUT_4444, 12, 2);
-	var RGB444 = XRGB4444;
-	var XBGR4444 = definePixelFormat(PixelType.PACKED16, PackedOrder.XBGR, PackedLayout.LAYOUT_4444, 12, 2);
-	var BGR444 = XBGR4444;
-	var XRGB1555 = definePixelFormat(PixelType.PACKED16, PackedOrder.XRGB, PackedLayout.LAYOUT_1555, 15, 2);
-	var RGB555 = XRGB1555;
-	var XBGR1555 = definePixelFormat(PixelType.PACKED16, PackedOrder.XBGR, PackedLayout.LAYOUT_1555, 15, 2);
-	var BGR555 = XBGR1555;
-	var ARGB4444 = definePixelFormat(PixelType.PACKED16, PackedOrder.ARGB, PackedLayout.LAYOUT_4444, 16, 2);
-	var RGBA4444 = definePixelFormat(PixelType.PACKED16, PackedOrder.RGBA, PackedLayout.LAYOUT_4444, 16, 2);
-	var ABGR4444 = definePixelFormat(PixelType.PACKED16, PackedOrder.ABGR, PackedLayout.LAYOUT_4444, 16, 2);
-	var BGRA4444 = definePixelFormat(PixelType.PACKED16, PackedOrder.BGRA, PackedLayout.LAYOUT_4444, 16, 2);
-	var ARGB1555 = definePixelFormat(PixelType.PACKED16, PackedOrder.ARGB, PackedLayout.LAYOUT_1555, 16, 2);
-	var RGBA5551 = definePixelFormat(PixelType.PACKED16, PackedOrder.RGBA, PackedLayout.LAYOUT_5551, 16, 2);
-	var ABGR1555 = definePixelFormat(PixelType.PACKED16, PackedOrder.ABGR, PackedLayout.LAYOUT_1555, 16, 2);
-	var BGRA5551 = definePixelFormat(PixelType.PACKED16, PackedOrder.BGRA, PackedLayout.LAYOUT_5551, 16, 2);
-	var RGB565 = definePixelFormat(PixelType.PACKED16, PackedOrder.XRGB, PackedLayout.LAYOUT_565, 16, 2);
-	var BGR565 = definePixelFormat(PixelType.PACKED16, PackedOrder.XBGR, PackedLayout.LAYOUT_565, 16, 2);
-	var RGB24 = definePixelFormat(PixelType.ARRAYU8, ArrayOrder.RGB, 0, 24, 3);
-	var BGR24 = definePixelFormat(PixelType.ARRAYU8, ArrayOrder.BGR, 0, 24, 3);
-	var XRGB8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.XRGB, PackedLayout.LAYOUT_8888, 24, 4);
-	var RGB888 = XRGB8888;
-	var RGBX8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.RGBX, PackedLayout.LAYOUT_8888, 24, 4);
-	var XBGR8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.XBGR, PackedLayout.LAYOUT_8888, 24, 4);
-	var BGR888 = XBGR8888;
-	var BGRX8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.BGRX, PackedLayout.LAYOUT_8888, 24, 4);
-	var ARGB8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.ARGB, PackedLayout.LAYOUT_8888, 32, 4);
-	var RGBA8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.RGBA, PackedLayout.LAYOUT_8888, 32, 4);
-	var ABGR8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.ABGR, PackedLayout.LAYOUT_8888, 32, 4);
-	var BGRA8888 = definePixelFormat(PixelType.PACKED32, PackedOrder.BGRA, PackedLayout.LAYOUT_8888, 32, 4);
-	var ARGB2101010 = definePixelFormat(PixelType.PACKED32, PackedOrder.ARGB, PackedLayout.LAYOUT_2101010, 32, 4);
 }
 
 
@@ -929,21 +875,6 @@ extern class FloatRectangle {
 
 	public static inline function create(x:Float, y:Float, w:Float, h:Float):FloatRectangle {
 		return cast untyped __cpp__("SDL_Rect{ (float){0}, (float){1}, (float){2}, (float){3} }", x, y, w, h);
-	}
-}
-
-@:keep
-@:native("SDL_Color")
-@:include("vendor/include/Headers.h")
-@:structAccess
-extern class Color {
-	public var r:UInt8;
-	public var g:UInt8;
-	public var b:UInt8;
-	public var a:UInt8;
-
-	public static inline function create(r:UInt8, g:UInt8, b:UInt8, a:UInt8):Color {
-		return cast untyped __cpp__("SDL_Color{ (unsigned char){0}, (unsigned char){1}, (unsigned char){2}, (unsigned char){3} }", r, g, b, a);
 	}
 }
 
