@@ -501,7 +501,7 @@ enum abstract HitTestResult(UInt32) from UInt32 to UInt32 {
     var RESIZE_LEFT;
 }
 
-typedef HitTest = cpp.Callable<(window:Window, area:cpp.RawConstPointer<sdl.SDL.Point>, data:Any) -> HitTestResult>;
+typedef HitTest = cpp.Callable<(window:Window, area:cpp.RawConstPointer<Point>, data:Any) -> HitTestResult>;
 
 
 
@@ -828,3 +828,62 @@ extern class SDL_PixelFormat {
 	public var next:PixelFormat;
 }
 typedef PixelFormat = Pointer<SDL_PixelFormat>;
+
+
+
+// SDL_rect.h
+@:keep
+@:native("SDL_Point")
+@:include("vendor/include/Headers.h")
+@:structAccess
+extern class Point {
+	public var x:Int;
+	public var y:Int;
+
+	public static inline function create(x:Int, y:Int):Point {
+		return cast untyped __cpp__("SDL_Point{ (int){0}, (int){1} }", x, y);
+	}
+}
+
+@:keep
+@:native("SDL_FPoint")
+@:include("vendor/include/Headers.h")
+@:structAccess
+extern class FloatPoint {
+	public var x:Float;
+	public var y:Float;
+
+	public static inline function create(x:Float, y:Float):Point {
+		return cast untyped __cpp__("SDL_FPoint{ (float){0}, (float){1} }", x, y);
+	}
+}
+
+@:keep
+@:native("SDL_Rect")
+@:include("vendor/include/Headers.h")
+@:structAccess
+extern class Rectangle {
+	public var x:Int;
+	public var y:Int;
+	public var w:Int;
+	public var h:Int;
+
+	public static inline function create(x:Int, y:Int, w:Int, h:Int):Rectangle {
+		return cast untyped __cpp__("SDL_Rect{ (int){0}, (int){1}, (int){2}, (int){3} }", x, y, w, h);
+	}
+}
+
+@:keep
+@:native("SDL_Rect")
+@:include("vendor/include/Headers.h")
+@:structAccess
+extern class FloatRectangle {
+	public var x:Float;
+	public var y:Float;
+	public var w:Float;
+	public var h:Float;
+
+	public static inline function create(x:Float, y:Float, w:Float, h:Float):FloatRectangle {
+		return cast untyped __cpp__("SDL_Rect{ (float){0}, (float){1}, (float){2}, (float){3} }", x, y, w, h);
+	}
+}

@@ -1,5 +1,6 @@
 package sdl;
 
+import sdl.Types.Boolean;
 import cpp.CastCharStar;
 import sdl.Types;
 import cpp.ConstCharStar;
@@ -802,6 +803,89 @@ extern class SDL {
 	}
 
 
+
+	// SDL_rect.h
+	inline static function pointInRect(point:Point, rect:Rectangle):Bool {
+		return untyped __cpp__("SDL_PointInRect(&{0}, &{1})", point, rect) == Boolean.TRUE;
+	}
+
+	inline static function rectEmpty(rect:Rectangle):Bool {
+		return untyped __cpp__("SDL_RectEmpty(&{0})", rect) == Boolean.TRUE;
+	}
+
+	inline static function rectEquals(a:Rectangle, b:Rectangle):Bool {
+		return untyped __cpp__("SDL_RectEquals(&{0}, &{1})", a, b) == Boolean.TRUE;
+	}
+
+	inline static function hasIntersection(a:Rectangle, b:Rectangle):Bool {
+		return untyped __cpp__("SDL_HasIntersection(&{0}, &{1})", a, b) == Boolean.TRUE;
+	}
+
+	inline static function intersectRect(a:Rectangle, b:Rectangle, result:Rectangle):Bool {
+		return untyped __cpp__("SDL_IntersectRect(&{0}, &{1}, &{2})", a, b, result) == Boolean.TRUE;
+	}
+
+	static inline function unionRect(a:Rectangle, b:Rectangle, result:Rectangle):Void {
+		untyped __cpp__("SDL_UnionRect(&{0}, &{1}, &{2})", a, b, result);
+	}
+
+	inline static function enclosePoints(points:Array<Point>, count:Int, clip:Rectangle, result:Rectangle):Int {
+		untyped __cpp__("
+			SDL_Point* _points = (SDL_Point*)malloc({1} * sizeof(SDL_Point));
+			for (int i = 0; i < {1}; i++)
+				_points[i] = {0}->__get(i);
+			int _result = SDL_EnclosePoints(_points, {2}, &{3}, &{4});
+			free(_points)", points, points.length, count, clip, result);
+    	return untyped __cpp__("_result");
+	}
+
+	inline static function intersectRectAndLine(rect:Rectangle, x1:Int, y1:Int, x2:Int, y2:Int):Bool {
+		return untyped __cpp__("SDL_IntersectRectAndLine(&{0}, &{1}, &{2}, &{3}, &{4})", rect, x1, y1, x2, y2) == Boolean.TRUE;
+	}
+
+	inline static function pointInFRect(point:FloatPoint, rect:FloatRectangle):Bool {
+		return untyped __cpp__("SDL_PointInFRect(&{0}, &{1})", point, rect) == Boolean.TRUE;
+	}
+
+	inline static function fRectEmpty(rect:FloatRectangle):Bool {
+		return untyped __cpp__("SDL_FRectEmpty(&{0})", rect) == Boolean.TRUE;
+	}
+
+	inline static function fRectEqualsEpsilon(a:FloatRectangle, b:FloatRectangle, epsilon:Float):Bool {
+		return untyped __cpp__("SDL_FRectEqualsEpsilon(&{0}, &{1}, {2})", a, b, epsilon) == Boolean.TRUE;
+	}
+
+	inline static function fRectEquals(a:FloatRectangle, b:FloatRectangle):Bool {
+		return untyped __cpp__("SDL_FRectEquals(&{0}, &{1})", a, b) == Boolean.TRUE;
+	}
+
+	inline static function hasIntersectionF(a:FloatRectangle, b:FloatRectangle):Bool {
+		return untyped __cpp__("SDL_HasIntersectionF(&{0}, &{1})", a, b) == Boolean.TRUE;
+	}
+
+	inline static function intersectFRect(a:FloatRectangle, b:FloatRectangle, result:FloatRectangle):Bool {
+		return untyped __cpp__("SDL_IntersectFRect(&{0}, &{1}, &{2})", a, b, result) == Boolean.TRUE;
+	}
+
+	static inline function unionFRect(a:FloatRectangle, b:FloatRectangle, result:FloatRectangle):Void {
+		untyped __cpp__("SDL_UnionFRect(&{0}, &{1}, &{2})", a, b, result);
+	}
+
+	inline static function encloseFPoints(points:Array<FloatPoint>, count:Int, clip:FloatRectangle, result:FloatRectangle):Int {
+		untyped __cpp__("
+			SDL_FPoint* _points = (SDL_FPoint*)malloc({1} * sizeof(SDL_FPoint));
+			for (int i = 0; i < {1}; i++)
+				_points[i] = {0}->__get(i);
+			int _result = SDL_EncloseFPoints(_points, {2}, &{3}, &{4});
+			free(_points)", points, points.length, count, clip, result);
+    	return untyped __cpp__("_result");
+	}
+
+	inline static function intersectFRectAndLine(rect:FloatRectangle, x1:Float, y1:Float, x2:Float, y2:Float):Bool {
+		return untyped __cpp__("SDL_IntersectFRectAndLine(&{0}, &{1}, &{2}, &{3}, &{4})", rect, x1, y1, x2, y2) == Boolean.TRUE;
+	}
+
+
 	// extras
 	@:native("SDL_Event")
 	static inline function createEventPtr():Event {
@@ -820,62 +904,6 @@ enum abstract TextureScaleMode(Int) from Int to Int {
     var LINEAR;
 	/** Anisotropic filtering **/
     var ANISOTROPIC;
-}
-
-@:keep
-@:native("SDL_Point")
-@:include("vendor/include/Headers.h")
-@:structAccess
-extern class Point {
-	public var x:Int;
-	public var y:Int;
-
-	public static inline function create(x:Int, y:Int):Point {
-		return cast untyped __cpp__("SDL_Point{ (int){0}, (int){1} }", x, y);
-	}
-}
-
-@:keep
-@:native("SDL_FPoint")
-@:include("vendor/include/Headers.h")
-@:structAccess
-extern class FloatPoint {
-	public var x:Float;
-	public var y:Float;
-
-	public static inline function create(x:Float, y:Float):Point {
-		return cast untyped __cpp__("SDL_FPoint{ (float){0}, (float){1} }", x, y);
-	}
-}
-
-@:keep
-@:native("SDL_Rect")
-@:include("vendor/include/Headers.h")
-@:structAccess
-extern class Rectangle {
-	public var x:Int;
-	public var y:Int;
-	public var w:Int;
-	public var h:Int;
-
-	public static inline function create(x:Int, y:Int, w:Int, h:Int):Rectangle {
-		return cast untyped __cpp__("SDL_Rect{ (int){0}, (int){1}, (int){2}, (int){3} }", x, y, w, h);
-	}
-}
-
-@:keep
-@:native("SDL_Rect")
-@:include("vendor/include/Headers.h")
-@:structAccess
-extern class FloatRectangle {
-	public var x:Float;
-	public var y:Float;
-	public var w:Float;
-	public var h:Float;
-
-	public static inline function create(x:Float, y:Float, w:Float, h:Float):FloatRectangle {
-		return cast untyped __cpp__("SDL_Rect{ (float){0}, (float){1}, (float){2}, (float){3} }", x, y, w, h);
-	}
 }
 
 typedef Double = cpp.Float64;
